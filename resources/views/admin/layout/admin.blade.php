@@ -33,91 +33,89 @@
 
     <!-- App css-->
     <link rel="stylesheet" type="text/css" href="{{asset('assets/css/admin.css') }}">
-        
-
     @yield('styles')
     <style>
 		.btn-group, .btn-group-vertical {
-  position: relative;
-  display: inline-flex;
-  vertical-align: middle;
-  width:50%;
-  margin-bottom: 20px;
-}
-		body{
-		background:#00ffbd !important;	
+          position: relative;
+          display: inline-flex;
+          vertical-align: middle;
+          width:50%;
+          margin-bottom: 20px;
+        }
+        body{
+            background:#c8c8c8 !important;	
 		}
 		.page-wrapper .page-body-wrapper .page-body {
-  min-height: calc(100vh - 80px);
-  margin-top: 80px;
-  padding: 0 15px;
-  position: relative;
-  background-color: #00ffbd !important;
-}
+          min-height: calc(100vh - 80px);
+          margin-top: 80px;
+          padding: 0 15px;
+          position: relative;
+          background-color:#dadada !important;
+        }
         .dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody > table > thead > tr > th, .dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody > table > thead > tr > td, .dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody > table > tbody > tr > th, .dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody > table > tbody > tr > td {
-    vertical-align: top;
-}
-.page-wrapper .page-body-wrapper .page-sidebar .sidebar-menu .sidebar-header {
-    font-size: 14px;
-    letter-spacing: 0.5px;
-    padding-bottom: 12px;
-    padding-top: 12px;
-    text-transform: capitalize;
-    font-weight: 600;
-    color: #fff !important;
-} 
-.card1 {
-    background:#fff;
-    margin-bottom: 30px !important;
-    border: 0px  !important;
-    -webkit-transition: all 0.3s ease  !important;
-    transition: all 0.3s ease  !important;
-    letter-spacing: 0.5px  !important;
-    border-radius: 8px  !important;
-    -webkit-box-shadow: 1px 5px 24px 0 rgba(68, 102, 242, 0.05)  !important;
-    box-shadow: 1px 5px 24px 0 rgba(68, 102, 242, 0.05)  !important;
-            
-    margin-left: 20%;
-margin-top: 8%;
- 
-margin-right: 5%; 
-}
-.dataTables_wrapper .dataTables_paginate {
-  border: 1px solid #50525a;
-  border-radius: 0.25rem;
-  padding-top: 0;
-  margin-left: 500px !important;
-  color: black;
-  background: #434343;
-}
-  .jsgrid-button {
-    width: 40px;
-    height: 40px;
-    border: none;
-    cursor: pointer;
-    background-image: url(http://exportindiagroup.com/ecom/public/assets/images/js-grid.png);
-    background-repeat: no-repeat;
-    background-color: transparent;
-}
+            vertical-align: top;
+        }
+        .page-wrapper .page-body-wrapper .page-sidebar .sidebar-menu .sidebar-header {
+                font-size: 14px;
+                letter-spacing: 0.5px;
+                padding-bottom: 12px;
+                padding-top: 12px;
+                text-transform: capitalize;
+                font-weight: 600;
+                color: #fff !important;
+            } 
+        .card1 {
+            background:#fff;
+            margin-bottom: 30px !important;
+            border: 0px  !important;
+            -webkit-transition: all 0.3s ease  !important;
+            transition: all 0.3s ease  !important;
+            letter-spacing: 0.5px  !important;
+            border-radius: 8px  !important;
+            -webkit-box-shadow: 1px 5px 24px 0 rgba(68, 102, 242, 0.05)  !important;
+            box-shadow: 1px 5px 24px 0 rgba(68, 102, 242, 0.05)  !important;
+                    
+            margin-left: 20%;
+        margin-top: 8%;
+         
+        margin-right: 5%; 
+        }
+        .dataTables_wrapper .dataTables_paginate {
+          border: 1px solid #50525a;
+          border-radius: 0.25rem;
+          padding-top: 0;
+          margin-left: 500px !important;
+          color: black;
+          background: #434343;
+        }
+          .jsgrid-button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            cursor: pointer;
+            background-image: url(http://exportindiagroup.com/ecom/public/assets/images/js-grid.png);
+            background-repeat: no-repeat;
+            background-color: transparent;
+        }
 
-.paginate_button{
-    margin:20px;
-}
-  
-.jsgrid-edit-button {
-    background-position: 0 -120px;
-    width: 16px;
-    height: 16px;
-}
-.jsgrid-delete-button {
-    background-position: 0 -80px;
-    width: 16px;
-    height: 16px;
-}
-.btn-danger {
-    background-color: #ea1313 !important;
-    border-color: #ea1313 !important;
-}
+        .paginate_button{
+            margin:20px;
+        }
+          
+        .jsgrid-edit-button {
+            background-position: 0 -120px;
+            width: 16px;
+            height: 16px;
+        }
+        .jsgrid-delete-button {
+            background-position: 0 -80px;
+            width: 16px;
+            height: 16px;
+        }
+        .btn-danger {
+            background-color: #ea1313 !important;
+            border-color: #ea1313 !important;
+        }
     </style>
 </head>
 <body>

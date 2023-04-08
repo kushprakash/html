@@ -22,7 +22,7 @@
 }
   </style>
 
-<div class="page-sidebar" style="background:#6fc6a5;">
+<div class="page-sidebar" style="background:#3a3a3a;">
             <div class="main-header-left d-none d-lg-block">
 				<div class="logo-wrapper text-center"><a href="{{url('/')}}"> <h4>Gameskraft</h4> </a></div>
             </div>
