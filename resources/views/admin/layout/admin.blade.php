@@ -120,7 +120,7 @@ margin-right: 5%;
 }
     </style>
 </head>
-<body id="body">
+<body>
 <div class="page-wrapper">
   <!-- Page Header Start-->
   @include('admin.common.header')
@@ -132,7 +132,7 @@ margin-right: 5%;
     <!-- Page Sidebar Ends-->
     <!-- Right sidebar Start-->
     <!-- Right sidebar Ends-->
-    @yield('content')
+       @yield('content')
     <!-- footer start-->
     @include('admin.common.footer')
     <!-- footer end-->
