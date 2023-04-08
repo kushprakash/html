@@ -98,7 +98,7 @@
                     </div>
                 </div>
            </div>
-          <div class="col-xl-6 xl-100">
+          <div class="col-xl-12 xl-100">
             <div class="card">
                 <div class="card-header">
                     <h5>Latest Orders</h5>
@@ -225,7 +225,7 @@
     </div>
 </div>
 
-      <div class="col-xl-6 xl-100">
+      <div class="col-xl-12 xl-100">
         <div class="card">
             <div class="card-header">
                <h5>Latest Orders</h5>
