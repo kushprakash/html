@@ -199,8 +199,16 @@
     
                     <li><a class="sidebar-header" href="#"><i data-feather="box"></i> <span>Products</span><i class="fa fa-angle-right pull-right"></i></a>
                         <ul class="sidebar-submenu">
+                             
+                               
+                                    <!--<li><a href="{{url('category')}}"><i class="fa fa-circle"></i>Category</a></li>-->
+                                    <!--<li><a href="{{url('sub-category')}}"><i class="fa fa-circle"></i>Sub Category</a></li>-->
+                                    <!--<li><a href="{{url('sub-sub-category')}}"><i class="fa fa-circle"></i>Sub SubCategory</a></li>-->
+                                    <!--<li><a href="{{url('brands')}}"><i class="fa fa-circle"></i>Brands</a></li>-->
                                     <li><a href="{{url('product-list')}}"><i class="fa fa-circle"></i>Product List</a></li>
                                     <li><a href="{{url('add-product')}}"><i class="fa fa-circle"></i>Add Product</a></li>
+                                   <!-- <li><a href="{{ url('productscolor-index1') }}"><i class="fa fa-circle"></i>Product Color</a></li>
+                                    <li><a href="{{ url('productsize-index1') }}"><i class="fa fa-circle"></i>Product Size & Detail</a></li>-->
                                    
                                     <li><a href="{{url('add-product-image-view')}}"><i class="fa fa-circle"></i>Product Image</a></li>
                               
@@ -211,9 +219,54 @@
                         
                     </li>
                   <li><a class="sidebar-header" href="{{url('vendor-order')}}"><i data-feather="chrome"></i><span>Orders</span></a></li>
-
+                    
+                    
+                    <!-- <li><a class="sidebar-header" href="#"><i data-feather="chrome"></i><span>Localization</span><i class="fa fa-angle-right pull-right"></i></a>-->
+                    <!--    <ul class="sidebar-submenu">-->
+                    <!--        <li><a href="translations.html"><i class="fa fa-circle"></i>Translations</a></li> -->
+                    <!--         <li><a href="currency-rates.html"><i class="fa fa-circle"></i>Currency Rates</a></li> -->
+                    <!--         <li><a href="taxes.html"><i class="fa fa-circle"></i>Taxes</a></li> -->
+                    <!--     </ul>-->
+                    <!--</li> --> 
+<!--<li><a class="sidebar-header" href="#"><i data-feather="bar-chart"></i><span>Reports</span></a></li>-->
+                  
+                    <!--<li><a class="sidebar-header" href="{{url('reports')}}"><i data-feather="bar-chart"></i><span>Reports</span></a></li>-->
+                    <!-- <li><a class="sidebar-header" href="#"><i data-feather="settings" ></i><span>Settings</span><i class="fa fa-angle-right pull-right"></i></a>
+                        <ul class="sidebar-submenu">
+                            <li><a href="profile.html"><i class="fa fa-circle"></i>Profile</a></li>
+                        </ul>
+                    </li> -->
+                     <!--  <li><a class="sidebar-header" href="#"><i data-feather="chrome"></i><span>Accounts</span><i class="fa fa-angle-right pull-right"></i></a>
+                        <ul class="sidebar-submenu">
+                            <li><a href="#"><i class="fa fa-circle"></i>Business Reports <i class="fa fa-angle-right pull-right"></i></a>
+                            <ul class="sidebar-submenu">
+                            <li><a href="#"><i class="fa fa-circle"></i>Balancesheet</a></li> 
+                            <li><a href="#"><i class="fa fa-circle"></i>Cashflow</a></li>
+                             <li><a href="#"><i class="fa fa-circle"></i>Profit & loss</a></li> 
+                          </ul>
+                            
+                            
+                            </li> 
+                             <li><a href="#"><i class="fa fa-circle"></i>Payment Reports <i class="fa fa-angle-right pull-right"></i></a>
+                               <ul class="sidebar-submenu">
+                            <li><a href="#"><i class="fa fa-circle"></i>Received Reports</a></li> 
+                             <li><a href="#"><i class="fa fa-circle"></i>Trasfer Reports</a></li> 
+                           </ul>
+                             </li> 
+                             <li><a href="#"><i class="fa fa-circle"></i>Expenses Reports <i class="fa fa-angle-right pull-right"></i> </a>
+                               <ul class="sidebar-submenu">
+                            <li><a href="#"><i class="fa fa-circle"></i>Business Reports</a></li> 
+                             <li><a href="#"><i class="fa fa-circle"></i>Other Reports</a></li> 
+                           </ul>
+                             </li> 
+                         </ul>
+                    </li> -->
+             
+                   <!-- <li><a class="sidebar-header" href="{{url('invoice')}}"><i data-feather="archive"></i><span>Invoice</span></a>
+                    </li> -->
+                     <!--<li><a class="sidebar-header" href="#"><i data-feather="log-in"></i><span>Export</span></a> -->
                      
                 </ul>
             </div>
             @endif
-</div>
+        </div>

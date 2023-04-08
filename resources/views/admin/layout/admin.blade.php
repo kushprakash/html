@@ -127,14 +127,10 @@ margin-right: 5%;
 <div class="page-wrapper">
 @include('admin.common.header')
 <div class="page-body-wrapper">
-    <div class="container" >
-        <div class="page-body" style="margin-left:130px;margin-top:100px;width:95%;">
 @include('admin.common.sidebar')
 @yield('content')
 @include('admin.common.footer')
-       </div>
-    </div>
-</div>
+<div>
 
 </div>
  <audio controls id="yourAudioTag" style="opacity:0;visibility: hidden;display:none">
