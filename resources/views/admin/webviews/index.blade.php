@@ -1,9 +1,5 @@
 @extends('admin.layout.admin')
-<div class="container" >
-<div class="page-body" style="margin-left:130px;margin-top:100px;width:95%;">
-
-            <!-- Container-fluid starts-->
-            <div class="container-fluid">
+<div class="container-fluid">
                 <div class="page-header">
                     <div class="row">
                         <div class="col-lg-6">
@@ -21,8 +17,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- Container-fluid Ends-->
+</div>
+
 @if(Auth::user()->vendor==10)
             <!-- Container-fluid starts-->
             <div class="container-fluid">
@@ -163,8 +159,6 @@
                             @endif 
 												
 												@endif
-												  
-		 
 		   </td>
                                         </tr>
                                         @endforeach
@@ -186,9 +180,7 @@
     
                 </div>
             </div>
-	
 	@else
-	
 	 <div class="container-fluid">
                 <div class="row">
                     <!--<div class="col-xl-3 col-md-6 xl-50">
@@ -350,21 +342,6 @@
     
                 </div>
             </div>
-	
-	
 	@endif
-	
 	@if(Auth::user()->vendor==2)
-	
-	
-	
-	
-	
-	
-	
-	
 	@endif
-            <!-- Container-fluid Ends-->
-
-        </div>
-</div>
