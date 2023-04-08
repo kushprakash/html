@@ -1,5 +1,4 @@
 @extends('admin.layout.admin')
-<div class="container" >
 <div class="page-body" style="margin-left:130px;margin-top:100px;width:95%;">
 
             <!-- Container-fluid starts-->
@@ -350,21 +349,5 @@
     
                 </div>
             </div>
-	
-	
 	@endif
-	
-	@if(Auth::user()->vendor==2)
-	
-	
-	
-	
-	
-	
-	
-	
-	@endif
-            <!-- Container-fluid Ends-->
-
-        </div>
 </div>
