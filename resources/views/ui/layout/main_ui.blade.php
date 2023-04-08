@@ -37,16 +37,19 @@
                <nav class="mobile-nav">
                   <ul class="mobile-menu">
                      <li><a href="{{url('/')}}">Home</a></li>
-                     @foreach($headerMenus as $headerMenu)
+                     <?php 
+                     foreach($headerMenus as $headerMenu) {
+                      $categories = $headerMenu['categories'] ?? [];
+                     ?>
                      <li>
                         <a href="javascript:void(0)">{{$headerMenu['name']}}</a>
                         <ul>
-                           @foreach($headerMenu->categories as $key=>$category)
+                           @foreach($categories as $key=>$category)
                            <li><a href="{{url('category-product/'.$category['id'])}}">{{$category['name']}}</a></li>
                            @endforeach
                         </ul>
                      </li>
-                     @endforeach
+                     <?php } ?>
                   </ul>
                   <ul class="mobile-menu">
                      <li><a href="{{url('cart-detail')}}">Cart</a></li>
