@@ -294,56 +294,43 @@
       <script>
          setInterval(function(){ 
             //code goes here that will be run every 5 seconds.
-          //msk();
+          msk();
          },9000);
-          function msk(){
-                
-                var xhr = new XMLHttpRequest();
-              xhr.open('GET','{{ url("noti") }}',true);
-         
-              xhr.onload = function () {      
+          function msk() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET','{{ url("noti") }}',true);
+            xhr.onload = function () {
               var cat= JSON.parse(xhr.responseText);
-               console.log(cat);
-                  if(cat.noti > 0)  { 
+              if(cat.noti > 0)  { 
                 document.getElementById('yourAudioTag').play();
-                      document.getElementById("ids").innerHTML=cat.noti;
-                    document.getElementById("do").innerHTML=cat.order+" "+cat.status+" "+cat.deliverytime;
-              
-                 document.getElementById("do").style.display="block";
+                document.getElementById("ids").innerHTML=cat.noti;
+                document.getElementById("do").innerHTML=cat.order+" "+cat.status+" "+cat.deliverytime;
+                document.getElementById("do").style.display="block";
                 var msg=cat.order+" "+cat.status+" "+cat.deliverytime;
-               alert(msg);
-              //document.getElementById('yourAudioTag').pause();
-             // document.getElementById('yourAudioTag').play();
-            
-              
-             
-            //goingameRaw()
-           
-         } 
-           }
-          xhr.send(); 
-         } 
+                goingameRaw()
+              }
+            }
+            xhr.send(); 
+          } 
       </script>
       <script>
          setInterval(function(){ 
             //code goes here that will be run every 5 seconds.
           //mskm();
          },60 * 1000);
-          function mskm(){
-                
-                var xhr = new XMLHttpRequest();
-              xhr.open('GET','{{ url("notif") }}',true);
-         
-              xhr.onload = function () {      
-              var cat= JSON.parse(xhr.responseText);
-           }
-          xhr.send(); 
-         } 
+         function mskm(){
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET','{{ url("notif") }}',true);
+          xhr.onload = function () {  
+            var cat= JSON.parse(xhr.responseText);
+          }
+          xhr.send();
+        } 
       </script>
       <script>
          function goingameRaw()
          {
-            //window.open("https://gameskraftcafe.in/my-order",'_self');
+            window.open("https://gameskraftcafe.in/my-order",'_self');
          }
             
       </script>
