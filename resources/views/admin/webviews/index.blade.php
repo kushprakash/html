@@ -127,7 +127,8 @@
                             </thead>
                             <tbody>
                         <?php 
-                        $datalist=DB::table('order_detail')->whereMonth('created_at',date('m'))->orderby('id','desc')->get();
+                        $products = Product::simplePaginate(10);
+                        $datalist=DB::table('order_detail')->whereMonth('created_at',date('m'))->orderby('id','desc')->paginate(10);
                         ?>
                         @if($datalist!=[])
                         @foreach($datalist as $key=>$value)
@@ -160,7 +161,8 @@
                             @endif
                             </tbody>
                         </table>
-                        <a href="{{url('order')}}" class="btn btn-primary">View All Orders</a>
+                        {!! $datalist->links() !!}
+                        <!--<a href="{{url('order')}}" class="btn btn-primary">View All Orders</a>-->
                     </div>
                     <div class="code-box-copy">
                         <button class="code-box-copy__btn btn-clipboard" data-clipboard-target="#example-head1" title="" data-original-title="Copy"><i class="icofont icofont-copy-alt"></i></button>
@@ -180,8 +182,8 @@
                     <div class="align-self-center text-center"><i data-feather="box" class="font-secondary"></i></div>
                 </div>
                  <?php 
-                 
-                $datapro=DB::table('products')->whereMonth('created_at',date('m'))->count(); //dd($dataer); ?>
+                $datapro=DB::table('products')->whereMonth('created_at',date('m'))->count();
+                 ?>
                 <div class="media-body col-8"><span class="m-0">Products</span>
                     <h3 class="mb-0"><span class="counter">{{$datapro}}</span><small> This Month</small></h3>
                 </div>
@@ -253,7 +255,7 @@
                         </thead>
                         <tbody>
                             <?php 
-                            $datalist=DB::table('order_detail')->whereMonth('created_at',date('m'))->orderby('id','desc')->get();
+                            $datalist=DB::table('order_detail')->whereMonth('created_at',date('m'))->orderby('id','desc')->paginate(10);
                             ?>
                             @if($datalist!=[])
                             @foreach($datalist as $key=>$value)
@@ -287,7 +289,8 @@
                         @endif
                         </tbody>
                     </table>
-                    <a href="{{url('order')}}" class="btn btn-primary">View All Orders</a>
+                    {!! $datalist->links() !!}
+                    <!--<a href="{{url('order')}}" class="btn btn-primary">View All Orders</a>-->
                 </div>
                 <div class="code-box-copy">
                     <button class="code-box-copy__btn btn-clipboard" data-clipboard-target="#example-head1" title="" data-original-title="Copy"><i class="icofont icofont-copy-alt"></i></button>
