@@ -1,5 +1,5 @@
 @extends('admin.layout.admin')
-<div class="page-body" style="margin-left:130px;margin-top:100px;width:95%;">
+<div class="page-body">
 
             <!-- Container-fluid starts-->
             <div class="container-fluid">
