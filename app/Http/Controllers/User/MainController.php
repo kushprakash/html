@@ -277,9 +277,8 @@ class MainController extends Controller
 		return view('ui.webviews.category',compact('product','products','newproduct','newproductl','brand','color'));
 	}
 	public function category($id){
-
 		$products = DB::table('products')
-		->select('products.*','product_color.id as product_color_id', 'product_images.images as product_image, product_size.id as product_size_id, category.id as category_id, category.category as category_name')
+		->select('products.*', 'product_color.id as product_color_id', 'product_images.images as product_image', 'product_size.id as product_size_id', 'category.id as category_id', 'category.category as category_name')
 		->leftJoin('product_color','product_color.product_id','=','products.id')
 		->leftJoin('product_images','product_images.product_id','=','products.id')
 		->leftJoin('product_size','product_size.product_id','=','products.id')
