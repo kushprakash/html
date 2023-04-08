@@ -277,17 +277,23 @@ class MainController extends Controller
 		return view('ui.webviews.category',compact('product','products','newproduct','newproductl','brand','color'));
 	}
 	public function category($id){
-		// dd($id);
-		$product=DB::table('products')->where('trending',0)->where('cat_id',$id)->get();
-		//dd($product);
-		$newproduct=DB::table('products')->where('trending',0)->where('cat_id',$id)->orderBy('id','desc')->take(3)->get();
-		$newproductl=DB::table('products')->where('trending',0)->where('cat_id',$id)->orderBy('id','asc')->take(3)->get();
 
-		$products=DB::table('products')->where('trending',0)->where('cat_id',$id)->first();$count=0; 
-		$brand=DB::table('brands')->where('category',$id)->get(); 
-		$color=DB::table('product_color')->where('category',$id)->get(); 
-
-		return view('ui.webviews.category',compact('product','products','newproduct','newproductl','brand','color'));
+		$products = DB::table('products')
+		->select('products.*','product_color.id as product_color_id', 'product_images.images as product_image, product_size.id as product_size_id, category.id as category_id, category.category as category_name')
+		->leftJoin('product_color','product_color.product_id','=','products.id')
+		->leftJoin('product_images','product_images.product_id','=','products.id')
+		->leftJoin('product_size','product_size.product_id','=','products.id')
+		->leftJoin('category','category.id','=','products.cat_id')
+		->where('products.trending',0)
+		->where('products.cat_id',$id)
+		->get();
+		$categories = DB::table('category')
+		->select('category.*', DB::raw('count(products.id) as total_product'))
+		->leftJoin('products','products.cat_id','=','category.id')
+		->groupBy('category.id')
+		->where('category.status', 1)
+		->get();
+		return view('ui.webviews.category',compact('products','categories'));
 	}
 
 
