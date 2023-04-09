@@ -860,10 +860,14 @@ class IndexController extends Controller
 	}
 
 	public function order(){
+	    
+		$order_detail =  DB::table('order_detail')->where('payment_status','paid')
+		->orderby('id','desc')
+		->paginate(50);
 	$emailsd="";
 		$start_date="";
 		$end_date="";
-		return view('admin.webviews.order',compact('emailsd','start_date','end_date'));
+		return view('admin.webviews.order',compact('order_detail','emailsd','start_date','end_date'));
 	}
 		public function reportSearchorder(Request $req){
 		    if($req->emails != null){

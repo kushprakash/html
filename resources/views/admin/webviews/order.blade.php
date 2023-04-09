@@ -77,11 +77,6 @@
                   <th>Action</th>
                 </tr>
               </thead>
-              <?php
-              $order_detail =  DB::table('order_detail')->where('payment_status','paid')
-              ->orderby('id','desc')
-              ->paginate(50);
-              ?>
               <tbody> @foreach($order_detail as $key=>$value) <tr>
                   <td>{{$key+1}} </td>
                   <td>
@@ -176,9 +171,6 @@
                                     </table>
                                     
                                   </div>
-                                  <div class="pagination">
-                                  	{!! $order_detail->links() !!}
-                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -242,6 +234,7 @@
                     </form> @endif @endif </td>
                 </tr> @endforeach </tbody>
             </table>
+            {!! $order_detail->links() !!}
           </div>
         </div>
       </div>
