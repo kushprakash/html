@@ -1,6 +1,5 @@
 @extends('admin.layout.admin')
 @section('content')
-
 <style>
 	.modal-dialog {
   max-width: 600px;
@@ -8,7 +7,6 @@
 }
 </style>
 <div class="page-body">
-
 <!-- Container-fluid starts-->
 <div class="container-fluid">
     <div class="page-header">
@@ -129,7 +127,7 @@
 						  @if($value->delivery==2)
 						  
 						   
-                              <option value="2">  Food is ready & Pick-up <!--Your food is ready. Head on over to the Tuck Shop counter & collect it soon!--></option>
+                              <option value="2">  Food is ready & Pick-up </option>
                             @endif
 						   @if($value->delivery==3)
                                <a href="#" class="btn btn-success">Delivered</a>
@@ -151,31 +149,26 @@
 			 
 		 
 			<div class="row"  style="border-top:5px solid black;">
-				<?php  $order = DB::table('order_detail')->where('order_id',$value->order_id)->where('user_id',$value->user_id)->first();
-		  //dd($order);
-        $orderd = DB::table('sub_order')->where('order_id',$value->order_id)->where('user_id',$value->user_id)->get();
-//	dd($orderd);
-		 $userDetail=DB::table('user_address')->where('id',$order->address_id)->first();
-				
+				<?php  
+				$order = DB::table('order_detail')->where('order_id',$value->order_id)->where('user_id',$value->user_id)->first();
+				$orderd = DB::table('sub_order')->where('order_id',$value->order_id)->where('user_id',$value->user_id)->paginate(10);
+				$userDetail=DB::table('user_address')->where('id',$order->address_id)->first();
 				?>
 				<div class="col-md-6 col-sm-6 text-left mt-3">
-					<h4 >Billing Detail</h4>
-					@if($userDetail != null)
-					<?php  $userDetailem=DB::table('users')->where('id',$userDetail->user_id)->first();
-		?>
-				  <h6>
-						 <strong>Email </strong> <br>@if($userDetailem != null) {{@$userDetailem->email}} @endif
-						<br>
-						 
-					 </h6>
-					
+				<h4>Billing Detail</h4>
+				@if($userDetail != null)
+				<?php  
+				$userDetailem=DB::table('users')->where('id',$userDetail->user_id)->first();
+				?>
+				<h6>
+				  	<strong>Email </strong> 
+				  	<br>@if($userDetailem != null) {{@$userDetailem->email}} @endif
 					<br>
-					 <br>
-					
-					 
-					@endif
-					 
-				</div>
+				</h6>
+			   <br>
+			   <br>
+			   @endif
+			   </div>
 				 
 			</div>
 
@@ -190,20 +183,19 @@
 							
 						</tr>
 					</thead>
-				 
-				
-				 <?php    $total=00;
-                       $subtotal=00;
-                       $toda=00;
-                       $totall=00;
+					<?php    
+					$total=00;
+					$subtotal=00;
+					$toda=00;
+					$totall=00;
 					$totals =00;
-				$sa=0;
-				$countd=0;
-				 $pris=0;
+					$sa=0;
+					$countd=0;
+					$pris=0;
 					$sk=[];
 					$skms=0;
 					$samamv=0;
-                       ?>
+					?>
                 
 				<tbody>
 				 
@@ -212,12 +204,10 @@
 					
 							<tr>
 						    <td>@php 
-							//	dd($item);
 									$productsize=DB::table('product_size')->where('id',$item->size_id)->first();
-								//	dd($order);
-									$productname=DB::table('products')->where('id',$item->product_id)->first();// dd($par); 
+									$productname=DB::table('products')->where('id',$item->product_id)->first();
 									@endphp
-										@php $productcolor=DB::table('product_color')->where('id',$item->color_id)->first(); 
+									@php $productcolor=DB::table('product_color')->where('id',$item->color_id)->first(); 
 								@endphp
 				<div><strong>{{@$productname->name}}</strong>
 								<?php $sa=0;
@@ -231,11 +221,11 @@
 												 
 										<?php $brandsk=DB::table('sub_product')->where('product_name',$dam)->first();  //dd($brands); ?>
 									@if($brandsk != null)   <strong>  <?php echo($brandsk->product_name); ?></strong> 
-					<?php  $sakdla[]=$brandsk->product_name?>
+									<?php  $sakdla[]=$brandsk->product_name ?>
 												<?php 
-	$samam += $brandsk->price;
-					 
-	$sama +=$brandsk->price; //echo($sa);?>
+												$samam += $brandsk->price;
+												$sama +=$brandsk->price;
+												?>
 												@endif
 					<?php $countmk++; ?>
 										@endforeach	
@@ -248,10 +238,9 @@
 								<?php 
 								$samamv +=$samam;
 								$sk[]=@$productname->name.' '.$item->sub_product;?>
-								<?php $skms+=@$item->quantity*@$productname->offer_price+$samam;
-								
-								
-								//dd($samam); ?>
+								<?php 
+								$skms+=@$item->quantity*@$productname->offer_price+$samam;
+								?>
 								
 								 </td>
 							<td>{{$sama}} / {{@$item->quantity}} </td>
@@ -267,44 +256,10 @@
 				@endif
 					</tbody>
 				</table>
-				
-			<!--	<div><strong>Unique side and front panel design</strong></div>
-								<small><strong>HSN:12211111, 12.0% IGST</strong> </small>
-				<table class="table table-condensed nomargin" >
-					<tbody>
-						 
-							<tr>
-						    <td>2</td>
-							<td>2</td>
-							<td>Rs 23,78</td>
-							<td>Rs 23,78</td>
-							<td>Rs 23,78</td>
-									<td>Rs 23,78</td>
-									<td>Rs 23,78</td>
-									<td>Rs 23,78</td>
-								<td> </td>
-									<td>Rs 23,78</td>
-									 
-								
-						</tr>
-				</table>-->
-				  
+				{!! $orderd->links() !!}
 			</div>
-
- 
 		</div>
 	</div>
- 
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
       </div>
        
     </div>
