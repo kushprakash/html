@@ -77,9 +77,9 @@
                 </div>
 				
 				
-                 <div class=" table-responsive p-3"> 
-    <table id="example" class="table table-bordered table-striped w-100">
-             <thead>
+                 <div class=" table-responsive p-3">  
+                 	<table class="table table-bordernone">
+                 		<thead>
                         <tr>
                             <th>S.No.</th> 
                     

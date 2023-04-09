@@ -884,7 +884,7 @@ class IndexController extends Controller
 		return view('admin.webviews.order',compact('order_detail','emailsd','start_date','end_date'));
 	}
 	public function report(){
-		$order_detail=  DB::table('order_detail')->where('payment_status','paid')->orderby('id','desc')->->paginate(50);;
+		$order_detail=  DB::table('order_detail')->where('payment_status','paid')->orderby('id','desc')->paginate(50);
 		$emailsd="";
 		$start_date="";
 		$end_date="";
