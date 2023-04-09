@@ -19,18 +19,11 @@ class IndexController extends Controller
 {
 	public function index(){
 
-		//dd('hell');
-		//dd(url()->previous());
 		if(Auth::user()->vendor=='10'){
-			//dd(url()->previous());
-
-
-			if(url()->previous()==url('admin/login')){
+			if(url()->previous()==url('admin/login')) {
 				return view('admin.webviews.index');
 				
-			}
-			else{
-			   
+			} else {
 				if(Auth::user()->vendor=='10'){
 				    
 					return view('admin.webviews.index');
@@ -39,29 +32,22 @@ class IndexController extends Controller
 					Auth::logout();
 					return redirect('/');
 				}
-
-
 			}
 
-		}
-		elseif(Auth::user()->vendor=='3'){
+		} elseif(Auth::user()->vendor=='3') {
 
-			if(url()->previous()==url('vendor/login')){
-				// dd(Auth::user());
+			if(url()->previous()==url('vendor/login')) {
 				return view('admin.webviews.index');
-			}
-			else{
-				if(Auth::user()->vendor=='3'){
+			} else {
+				if(Auth::user()->vendor=='3') {
 					return view('admin.webviews.index');
-				}
-				else{
+				} else {
 					Auth::logout();
 					return redirect('/');
 				}
 
 			}
-		}
-		elseif(Auth::user()->vendor==1){
+		} elseif(Auth::user()->vendor==1){
 			if(Auth::user()->is_active!=1){
 				return redirect('index')->with("mymsg23","Thanks for your Login/registration ");
 			}
@@ -69,10 +55,7 @@ class IndexController extends Controller
 				Auth::logout();
 				return redirect('/');
 			}
-			// return view('admin.webviews.index');
-		}
-
-		else{
+		} else {
 			return redirect('index')->with("mymsg23","Thanks for your Login/registration ");
 		}
 
@@ -878,7 +861,7 @@ class IndexController extends Controller
 
 	public function order(){
 	    
-		$order_detail=  DB::table('order_detail')->where('payment_status','paid')->orderby('id','desc')->take('500')->get();
+		$order_detail =  DB::table('order_detail')->where('payment_status','paid')->orderby('id','desc')->take('500')->paginate(50);
 	$emailsd="";
 		$start_date="";
 		$end_date="";
