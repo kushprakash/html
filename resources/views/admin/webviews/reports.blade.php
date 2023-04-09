@@ -489,6 +489,7 @@
                          
                  </tbody>
                     </table>
+                    {!! $order_detail->links() !!}
                 </div>
             </div>
         </div>
