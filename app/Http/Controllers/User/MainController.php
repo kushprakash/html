@@ -285,7 +285,6 @@ class MainController extends Controller
 		->leftJoin('category','category.id','=','products.cat_id')
 		->where('products.trending',0)
 		->where('products.cat_id',$id)
-		->groupBy('products.cat_id')
 		->get();
 		$categories = DB::table('category')
 		->select('category.*', DB::raw('count(products.id) as total_product'))
