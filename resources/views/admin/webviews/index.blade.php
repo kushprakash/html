@@ -40,7 +40,6 @@
                             $from=date('Y-m-d', strtotime('today - 30 days'));
                             $dataer=DB::table('sub_order')->whereMonth('created_at',date('m'))->sum('price');
                              ?>
-                           
                             <div class="media-body col-8"><span class="m-0">Earnings</span>
                                 <h3 class="mb-0">₹ <span class="counter">{{$dataer}}</span><small> This Month</small></h3>
                             </div>
@@ -127,7 +126,6 @@
                             </thead>
                             <tbody>
                         <?php 
-                        $products = Product::simplePaginate(10);
                         $datalist=DB::table('order_detail')->whereMonth('created_at',date('m'))->orderby('id','desc')->paginate(10);
                         ?>
                         @if($datalist!=[])
