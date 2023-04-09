@@ -174,7 +174,10 @@
                                           <td>Rs ₹{{@$item->quantity*@$productname->offer_price+$sama}}</td>
                                         </tr> <?php $countd++; ?> @endforeach @endif </tbody>
                                     </table>
-                                    {!! $order_detail->links() !!}
+                                    
+                                  </div>
+                                  <div class="pagination">
+                                  	{!! $order_detail->links() !!}
                                   </div>
                                 </div>
                               </div>
