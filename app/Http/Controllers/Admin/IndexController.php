@@ -1889,4 +1889,114 @@ if($status==3){
 					
 		}
 	}
+
+
+
+	public function reportDashboard(Request $request)
+	{
+
+		if (isset($request->start)) {
+
+			$startDate = date('Y-m-d', strtotime($request->start));
+			$endDate = date('Y-m-d', strtotime($request->end));
+		} else {
+
+			$month = date('m');
+			$year = date('Y');
+			$startDate = $year . '-' . $month . '-01';
+			$endDate = date('Y-m-d');
+		}
+
+		return view('admin.webviews.reportDashboard', compact('startDate', 'endDate'));
+	}
+
+
+	public function
+	dashboard_rport(Request $request)
+	{
+		$order_detail = array();
+
+		$startDate = date('Y-m-d', strtotime($request->start));
+		$endDate = date('Y-m-d', strtotime($request->end));
+		$order_status = $request->order_status;
+		$delivery = $request->delivery;
+		$start_date = $startDate;
+		$end_date = $endDate;
+		$emailsd = "";
+
+		if (empty($order_status) && empty($delivery)) {
+
+			$order_detail =  DB::table('order_detail')
+			->where('created_at', '>=', $startDate)
+				->where('created_at', '<=', $endDate)
+				->take('50')
+				->get();
+		}
+
+		if (empty($order_status) && $delivery == '0') {
+
+			$order_detail =  DB::table('order_detail')
+			->where('order_status', null)
+				->where('delivery', 0)
+				->where('created_at', '>=', $startDate)
+				->where('created_at', '<=', $endDate)
+				->take('50')
+				->get();
+		}
+
+		if ($order_status == 6 && $delivery == 4) {
+
+			$order_detail =  DB::table('order_detail')
+			->where('order_status', '!=', 6)
+				->where('delivery', 4)
+				->where('created_at', '>=', $startDate)
+				->where('created_at', '<=', $endDate)
+				->take('50')
+				->get();
+		}
+
+		if ($order_status == 6 && $delivery == 1) {
+
+			$order_detail =  DB::table('order_detail')
+			->where('order_status', '!=', 6)
+				->where('delivery', 1)
+				->where('created_at', '>=', $startDate)
+				->where('created_at', '<=', $endDate)
+				->take('50')
+				->get();
+		}
+
+		if ($order_status == 6 && $delivery == 2) {
+
+			$order_detail =  DB::table('order_detail')
+			->where('order_status', '!=', 6)
+				->where('delivery', 2)
+				->where('created_at', '>=', $startDate)
+				->where('created_at', '<=', $endDate)
+				->take('50')
+				->get();
+		}
+
+		if ($order_status == 6 && $delivery == 3) {
+
+			$order_detail =  DB::table('order_detail')
+			->where('order_status', '!=', 6)
+				->where('delivery', 3)
+				->where('created_at', '>=', $startDate)
+				->where('created_at', '<=', $endDate)
+				->take('50')
+				->get();
+		}
+
+		if ($order_status == 6  && empty($delivery)) {
+
+			$order_detail =  DB::table('order_detail')
+			->where('order_status', 6)
+				->where('created_at', '>=', $startDate)
+				->where('created_at', '<=', $endDate)
+				->take('50')
+				->get();
+		}
+		return view('admin.webviews.dashboard_rport', compact('order_detail', 'emailsd', 'start_date', 'end_date'));
+	}
 }
