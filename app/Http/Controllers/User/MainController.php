@@ -284,6 +284,7 @@ class MainController extends Controller
 		->leftJoin('product_size','product_size.product_id','=','products.id')
 		->leftJoin('category','category.id','=','products.cat_id')
 		->where('products.trending',0)
+		->where(['product_size.status' => 1, 'product_color.state' => 1])
 		->where('products.cat_id',$id)
 		->get();
 		$categories = DB::table('category')
