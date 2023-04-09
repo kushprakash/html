@@ -59,7 +59,7 @@
             <h5>Manage Order</h5>
           </div>
           <div class=" table-responsive p-3">
-            <table class="table table-bordered table-striped">
+             <table class="table table-bordernone">
               <thead>
                 <tr>
                   <th>S.No.</th>
