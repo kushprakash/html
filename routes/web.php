@@ -476,4 +476,4 @@ Route::get('/samlverify',[App\Http\Controllers\User\MainController::class, 'saml
 
 Route::get('google/login', [App\Http\Controllers\GoogleAuthController::class, 'loginWithGoogle']);
 Route::get('/login/google/callback', [App\Http\Controllers\GoogleAuthController::class, 'callback']);
-    
+Route::get('/createorder', [App\Http\Controllers\GoogleAuthController::class, 'createorder']);  
