@@ -112,6 +112,13 @@ Route::group(['middleware' => ['auth']], function () {
     });
 
 
+  Route::get('reportDashboard', [App\Http\Controllers\Admin\IndexController::class, 'reportDashboard'])->name('reportDashboard');
+  Route::post('reportDashboard', [App\Http\Controllers\Admin\IndexController::class, 'reportDashboard'])->name('reportDashboard');
+
+  Route::get('dashboard_rport', [App\Http\Controllers\Admin\IndexController::class, 'dashboard_rport'])->name('dashboard_rport');
+  Route::post('dashboard_rport', [App\Http\Controllers\Admin\IndexController::class, 'dashboard_rport'])->name('dashboard_rport');
+
+  
     Route::delete('permissions/destroy', [App\Http\Controllers\Admin\PermissionsController::class, 'massDestroy'])->name('permissions.massDestroy');
 
     Route::resource('permissions',PermissionsController::class);
@@ -469,4 +476,4 @@ Route::get('/samlverify',[App\Http\Controllers\User\MainController::class, 'saml
 
 Route::get('google/login', [App\Http\Controllers\GoogleAuthController::class, 'loginWithGoogle']);
 Route::get('/login/google/callback', [App\Http\Controllers\GoogleAuthController::class, 'callback']);
-    
+Route::get('/createorder', [App\Http\Controllers\GoogleAuthController::class, 'createorder']);  

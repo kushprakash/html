@@ -34,6 +34,7 @@
                 </div>                 
                 <ul class="sidebar-menu">
                     <li><a class="sidebar-header" href="{{url('/dashboard')}}"><i data-feather="home"></i><span>Dashboard</span></a></li>
+                   <li><a class="sidebar-header" href="{{url('/reportDashboard')}}"><i data-feather="home"></i><span>Report Dashboard</span></a></li>
                   
 					 <li><a  class="sidebar-header"  href="{{ route("users.index") }}"><i data-feather="users"></i><span>Employee</span></a></li> 
                      
