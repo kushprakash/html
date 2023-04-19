@@ -1,4 +1,7 @@
- @extends('ui.layout.main_ui')
+<?php
+use Illuminate\Support\Facades\Redis;
+?>
+@extends('ui.layout.main_ui')
 @section('content')
 	
 <div class="special-menu  slider-wrap" id="page" loop style="overflow:scroll !important;z-index:999999999999">
