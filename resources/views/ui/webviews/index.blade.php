@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\Redis;
 			
 				 <?php 
                  if (!empty(Redis::get('category:catss'))) {
-                    $catss = Redis::get('category:catss');
+                    $catss = json_decode(Redis::get('category:catss'), 0);
                   } else {
                     $catss=DB::table('category')->where('deleted_at',null)->get();
-                    Redis::set('category:catss', $catss, 'EX', 60*60*12);
+                    Redis::set('category:catss', json_encode($catss), 'EX', 60*60*12);
                   }
                  
                  $count=1;
@@ -27,10 +27,10 @@ use Illuminate\Support\Facades\Redis;
             <div class="home-slider slide-animate owl-carousel owl-theme show-nav-hover nav-big">
                 <?php 
                 if (!empty(Redis::get('index:banner'))) {
-                    $banner = Redis::get('index:banner');
+                    $banner = json_decode(Redis::get('index:banner'), 0);
                   } else {
                     $banner=DB::table('banner_image')->where('deleted_at',null)->get();
-                    Redis::set('index:banner', $banner, 'EX', 60*60*12);
+                    Redis::set('index:banner', json_encode($banner), 'EX', 60*60*12);
                   }
                 $count=1;
                 ?>
@@ -58,20 +58,20 @@ use Illuminate\Support\Facades\Redis;
 
                 <?php  
                 if (!empty(Redis::get('index:products'))) {
-                    $products = Redis::get('index:products');
+                    $products = json_decode(Redis::get('index:products'),0);
                 } else {
                     $products=DB::table('products')->where('trending',0)->where('deleted_at',null)->get();
-                    Redis::set('index:products', $products, 'EX', 60*60*12);
+                    Redis::set('index:products', json_encode($products), 'EX', 60*60*12);
                 }
                 ?>
                 @if($products != [])
                 @foreach($products as $d)
                 <?php
                 if (!empty(Redis::get('product_coloru:' . $d->id))) {
-                    $product_coloru = Redis::get('product_coloru:' . $d->id);
+                    $product_coloru = json_decode(Redis::get('product_coloru:' . $d->id), 0);
                 } else {
                     $product_coloru=DB::table('product_color')->where('product_id',$d->id)->first();
-                    Redis::set('product_coloru:' . $d->id, $product_coloru, 'EX', 60*60*12);
+                    Redis::set('product_coloru:' . $d->id, json_encode($product_coloru), 'EX', 60*60*12);
                 }
                 $color_id=0;
                 if($product_coloru!=null) {
@@ -84,17 +84,17 @@ use Illuminate\Support\Facades\Redis;
 
                         <?php 
                         if (!empty(Redis::get('product_images:' . $d->id))) {
-                            $productimage = Redis::get('product_images:' . $d->id);
+                            $productimage = json_decode(Redis::get('product_images:' . $d->id), 0);
                         } else {
                             $productimage = DB::table('product_images')->where('product_id',$d->id)->first();
-                            Redis::set('product_images:' . $d->id, $productimage, 'EX', 60*60*12);
+                            Redis::set('product_images:' . $d->id, json_encode($productimage), 'EX', 60*60*12);
                         }
 
                         if (!empty(Redis::get('product_size:' . $d->id))) {
-                            $product_size = Redis::get('product_size:' . $d->id);
+                            $product_size = json_decode(Redis::get('product_size:' . $d->id), 0);
                         } else {
                             $product_size=DB::table('product_size')->where('product_id',$d->id)->first();
-                            Redis::set('product_size:' . $d->id, $product_size, 'EX', 60*60*12);
+                            Redis::set('product_size:' . $d->id, json_encode($product_size), 'EX', 60*60*12);
                         }
                         ?>
                                
@@ -110,17 +110,17 @@ use Illuminate\Support\Facades\Redis;
                                  $session = Session::getId();
                                  $userId = Auth::user()->id;
                                  if (!empty(Redis::get('carts:count:' . $d->id .':' . $userId))) {
-                                    $resultad = Redis::get('carts:count:' . $d->id .':' . $userId);
+                                    $resultad = json_decode(Redis::get('carts:count:' . $d->id .':' . $userId),0);
                                 } else {
                                     $resultad=DB::table('carts')->where('user_id',Auth::user()->id)->where('product_id',$d->id)->count(); 
-                                    Redis::set('carts:count:' . $d->id .':' . $userId, $resultad, 'EX', 60*60*12);
+                                    Redis::set('carts:count:' . $d->id .':' . $userId, json_encode($resultad), 'EX', 60*60*12);
                                 }
 
                                 if (!empty(Redis::get('wishtr:count:' . $d->id .':' . $userId))) {
-                                    $wishtr = Redis::get('wishtr:count:' . $d->id .':' . $userId);
+                                    $wishtr = json_decode(Redis::get('wishtr:count:' . $d->id .':' . $userId),0);
                                 } else {
                                     $wishtr=DB::table('wishlist')->where('customer_id',Auth::user()->id)->where('product_id',$d->id)->count();
-                                    Redis::set('wishtr:count:' . $d->id .':' . $userId, $wishtr, 'EX', 60*60*12);
+                                    Redis::set('wishtr:count:' . $d->id .':' . $userId, json_encode($wishtr), 'EX', 60*60*12);
                                 }
                                  ?> 
                                  @else
@@ -139,10 +139,10 @@ use Illuminate\Support\Facades\Redis;
                                     <div class="category-list">
 										<?php 
                                         if (!empty(Redis::get('catssid:' . $d->cat_id ))) {
-                                            $catssid = Redis::get('catssid:' . $d->cat_id);
+                                            $catssid = json_decode(Redis::get('catssid:' . $d->cat_id),0);
                                         } else {
                                             $catssid=DB::table('category')->where('id',$d->cat_id)->where('deleted_at',null)->first();
-                                            Redis::set('catssid:' . $d->cat_id , $catssid, 'EX', 60*60*12);
+                                            Redis::set('catssid:' . $d->cat_id , json_encode($catssid), 'EX', 60*60*12);
                                         }
                                         ?>
 										@if($catssid != null)
@@ -163,10 +163,10 @@ use Illuminate\Support\Facades\Redis;
                                 <div class="price-box">
                                 <?php 
                                 if (!empty(Redis::get('product_size:' . $d->id ))) {
-                                    $size = Redis::get('product_size:' . $d->id);
+                                    $size = json_decode(Redis::get('product_size:' . $d->id),0) ;
                                 } else {
                                     $size = DB::table('product_size')->where('product_id',$d->id)->first();
-                                    Redis::set('product_size:' . $d->id , $size, 'EX', 60*60*12);
+                                    Redis::set('product_size:' . $d->id , json_encode($size), 'EX', 60*60*12);
                                 }
                                 $count=0;
                                 ?>
