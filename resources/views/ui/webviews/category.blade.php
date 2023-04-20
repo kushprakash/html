@@ -42,25 +42,41 @@ use Illuminate\Support\Facades\Redis;
                                     </div>
                                     <?php
                                     if (Auth::check()) {
-                                        $resultad = DB::table('carts')
-                                            ->where('user_id', Auth::user()->id)
-                                            ->where('product_id', $product->id)
-                                            ->count();
+                                        $userId=Auth::user()->id;
+                                        if (!empty(Redis::get('carts:count:' . $product->id .':' . $userId))) {
+                                            $resultad = json_decode(Redis::get('carts:count:' . $product->id .':' . $userId),0);
+                                        } else {
+                                            $resultad=DB::table('carts')->where('user_id',$userId)->where('product_id',$product->id)->count(); 
+                                            Redis::set('carts:count:' . $product->id .':' . $userId, json_encode($resultad), 'EX', 60*60*12);
+                                        }
 
-                                        $wishtr = DB::table('wishlist')
-                                            ->where('customer_id', Auth::user()->id)
-                                            ->where('product_id', $product->id)
-                                            ->count();
+
+                                        if (!empty(Redis::get('wishtr:count:' . $product->id .':' . $userId))) {
+                                            $wishtr = json_decode(Redis::get('wishtr:count:' . $product->id .':' . $userId),0);
+                                        } else {
+                                            $wishtr=DB::table('wishlist')->where('customer_id',$userId)->where('product_id',$product->id)->count();
+                                            Redis::set('wishtr:count:' . $product->id .':' . $userId, json_encode($wishtr), 'EX', 60*60*12);
+                                        }
+
                                     } else {
                                         $session = Session::getId();
-                                        $resultad = DB::table('carts_temp')
-                                            ->where('user_id', $session)
-                                            ->where('product_id', $product->id)
-                                            ->count();
-                                        $wishtr = DB::table('wishlist')
-                                            ->where('customer_id', $session)
-                                            ->where('product_id', $product->id)
-                                            ->count();
+                                        
+
+                                        if (!empty(Redis::get('carts:count:' . $product->id .':' . $session))) {
+                                            $resultad = json_decode(Redis::get('carts:count:' . $product->id .':' . $session),0);
+                                        } else {
+                                            $resultad=DB::table('carts_temp')->where('user_id',$session)->where('product_id',$product->id)->count(); 
+                                            Redis::set('carts:count:' . $product->id .':' . $session, json_encode($resultad), 'EX', 60*60*12);
+                                        }
+
+                                       
+
+                                            if (!empty(Redis::get('wishtr:count:' . $product->id .':' . $session))) {
+                                            $wishtr = json_decode(Redis::get('wishtr:count:' . $product->id .':' . $session),0);
+                                        } else {
+                                            $wishtr=DB::table('wishlist')->where('customer_id',$session)->where('product_id',$product->id)->count();
+                                            Redis::set('wishtr:count:' . $product->id .':' . $session, json_encode($wishtr), 'EX', 60*60*12);
+                                        }
                                     }
                                     ?>
                                     <div class="btn-icon-group">

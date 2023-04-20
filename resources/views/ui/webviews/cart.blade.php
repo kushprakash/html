@@ -1,3 +1,6 @@
+<?php
+use Illuminate\Support\Facades\Redis;
+?>
 @extends('ui.layout.main_ui')
 @section('content')
 
@@ -35,17 +38,52 @@
                         <tbody>
                             <tr>
                                 <td>
-                                     <?php $productsr=DB::table('product_images')->where('product_id',$value->id)->where('color_id',$value->color_id)->first(); ?>
+                                     <?php
+                                        
+                                         
+                                        
+                                         if (!empty(Redis::get('productsr:data:' . $value->id.':'.value->color_id))) {
+                                            $productsr = json_decode(Redis::get('productsr:data:' . $value->id.':'.value->color_id),0);
+                                            } else {
+                                            $productsr=DB::table('product_images')->where('product_id',$value->id)->where('color_id',$value->color_id)->first();
+
+                                            Redis::set('productsr:data:' . $value->id.':'.value->color_id, json_encode($productsr), 'EX', 60*60*12);
+                                            }
+                                        
+                                        ?>
                                     <a href="#"><img src="@if($productsr!=null) {{asset($productsr->images)}} @endif" alt="" width="80">
 	
 									</a>
                                 </td>
                                 <td><a href="#">{{$value->name}}  
 									
-									<?php  $sa=0; $damsa=DB::table('add_sub_product_user')->where('product_id',$value->id)->where('user_id',Auth::user()->id)->get();  //dd($damsa);	?>
-										@if($damsa != "[]")
+									<?php  $sa=0; 
+                                    
+                                     //dd($damsa);	?>
+									
+                                    if (!empty(Redis::get('damsa:data:' . $value->id.':'.Auth::user()->id))) {
+                                    $damsa = json_decode(Redis::get('damsa:data:' . $value->id.':'.Auth::user()->id),0);
+                                    } else {
+                                     $damsa=DB::table('add_sub_product_user')->where('product_id',$value->id)->where('user_id',Auth::user()->id)->get();
+
+                                    Redis::set('damsa:data:' . $value->id.':'.Auth::user()->id, json_encode($damsa), 'EX', 60*60*12);
+                                    }	
+                                        
+                                        @if($damsa != "[]")
 										@foreach($damsa  as $key=>$dam)
-										<?php $brands=DB::table('sub_product')->where('id',$dam->sub_product_id)->first(); //dd($brands); ?>
+
+										<?php 
+                                        
+                        
+                                            if (!empty(Redis::get('brands:data:' . $dam->sub_product_id))) {
+                                            $brands = json_decode(Redis::get('brands:data:' . $dam),0);
+                                            } else {
+                                            $brands=DB::table('sub_product')->where('id',$dam->sub_product_id)->first(); 
+
+                                            Redis::set('brands:data:' . $dam->sub_product_id, json_encode($brands), 'EX', 60*60*12);
+                                            }
+
+                                        //dd($brands); ?>
 									@if($brands != null) <br> <strong>  {{$brands->product_name}} </strong>
 										<?php $sa +=$brands->price; //echo($sa);?>
 									@endif
@@ -58,7 +96,19 @@
                                
 								<td> <h6><strong> {{$sa}} </strong></h6></td>
                                 <td>
-                                <?php $productsize=DB::table('product_size')->where('id',$value->size)->first();?>
+                                <?php
+                                    
+                                    
+                                    
+                                    if (!empty(Redis::get('productsize:data:' . $value->size))) {
+                                    $productsize = json_decode(Redis::get('productsize:data:' . $value->size),0);
+                                    } else {
+                                     $productsize=DB::table('product_size')->where('id',$value->size)->first();
+
+                                    Redis::set('productsize:data:' . $value->size, json_encode($productsize), 'EX', 60*60*12);
+                                    }
+
+                                    ?>
                      
                                     <h6>{{$value->offer_price}}
                                    

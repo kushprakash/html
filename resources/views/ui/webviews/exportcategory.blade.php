@@ -1,3 +1,6 @@
+<?php
+use Illuminate\Support\Facades\Redis;
+?>
 @extends('ui.layout.main_ui')
 @section('content')
 <div class="breadcrumb-section">
@@ -132,7 +135,18 @@
                                 <div> 
                                 @foreach($newproduct as $news)
                                     <div class="media">
-                                          <?php $image=DB::table('export_product_image')->where('product_id',$news->id)->first(); $count=0;  ?>
+                                          <?php 
+                                            
+                                             
+                                            
+                                            if (!empty(Redis::get('image:data:' . $news->id ))) {
+                                                $image = json_decode(Redis::get('image:data:' . $news->id ),0);
+                                            } else {
+                                                $image=DB::table('export_product_image')->where('product_id',$news->id)->first();
+                                                Redis::set('image:data:' . $news->id , json_encode($image), 'EX', 60*60*12);
+                                            }
+                                            
+                                            $count=0;  ?>
                                         
                                             
                                             <a href="{{url('export-product-detail/'.$news->id)}}"><img src="{{asset($news->image)}}" class="img-fluid blur-up lazyload" alt=""></a>
@@ -207,8 +221,13 @@
                                                              
                                                         <?php 
                                   
-                                $product_size=DB::table('product_size')->where('product_id',$r->id)->first();
-                                    
+                                
+                                             if (!empty(Redis::get('product_size:data:' . $r->id ))) {
+                                                $product_size = json_decode(Redis::get('product_size:data:' . $r->id ),0);
+                                            } else {
+                                                $product_size=DB::table('product_size')->where('product_id',$r->id)->first();
+                                                Redis::set('product_size:data:' . $r->id , json_encode($product_size), 'EX', 60*60*12);
+                                            }  
                                 ?>
                                                             <div class="cart-info cart-wrap">
                                                                 <!--<button data-toggle="modal" data-target="#addtocart"   onclick="addcartsize({{$r->id}})" title="Add to cart">-->

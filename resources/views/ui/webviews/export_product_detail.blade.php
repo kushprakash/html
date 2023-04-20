@@ -1,3 +1,6 @@
+<?php
+use Illuminate\Support\Facades\Redis;
+?>
 @extends('ui.layout.main_ui')
 @section('content')
 <div class="breadcrumb-section">
@@ -95,8 +98,7 @@
                             <?php 
                                  // dd($value1->id);
                                 $product_color=DB::table('product_color')->where('product_id',$product_detail->id)->get();
-                                Redis::set('product_color:product_color', json_encode($product_color), 'EX', 60*60*12);
-                                      // dd($product_images);
+                                // dd($product_images);
                                 ?>
                                 <div class="rating"><i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
                                     class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i></div>
@@ -121,8 +123,7 @@
                                           <select name="size" class="btn btn-link shadow" onchange="this.form.submit()" style="margin-top:0px;border-top-right-radius: 60px 60px;border-bottom-right-radius: 60px 60px;border-top-left-radius: 60px 60px;border-bottom-left-radius: 60px 60px;">
                                                <?php  
                                                $product_size1=DB::table('product_size')->where('product_id',$product_detail->id)->get();
-                                               Redis::set('product_size:product_size1', json_encode($product_size1), 'EX', 60*60*12);
-                                             //dd($product->products_id);
+                                               //dd($product->products_id);
                                              ?>
                                             
                                           <option selected>Select</option>
@@ -202,8 +203,7 @@
                                     <?php  
                                     
                                     $user_cart  = DB::table('export_products')->join('carts','export_products.id','=','carts.product_id')->where('carts.user_id',Auth::user()->id)->orderBy('carts.id','desc')->select('export_products.*','carts.quantity','carts.id as cart_id','carts.size','carts.color_id','carts.price')->get();
-                                    Redis::set('export_products:user_cart', json_encode($user_cart), 'EX', 60*60*12);      
-                                           
+                                        
                                            ?>
                                            
                                            
@@ -227,7 +227,16 @@
                                             @foreach($user_cart as $key=>$valu22)
                                              @if($counte>=1)
                                             
-                                              <?php $productsr=DB::table('export_product_image')->where('product_id',$valu22->id)->first(); ?>
+                                              <?php 
+                                              
+                                              
+                                               if (!empty(Redis::get('productsr:product_id:' . $valu22->id))) {
+                                                    $productsr = json_decode(Redis::get('productsr:product_id:' . $valu22->id),0);
+                                                } else {
+                                                    $productsr=DB::table('export_product_image')->where('product_id',$valu22->id)->first();
+                                                    Redis::set('productsr:product_id:' . $valu22->id , json_encode($productsr), 'EX', 60*60*12);
+                                                }
+                                              ?>
                                             <div class="product-box col-sm-3 col-6">
                                                 <div class="img-wrapper">
                                                     <div class="front">
@@ -668,8 +677,7 @@
                                         </div>
                                         <div class="row" id="upsell_product">
                                     <?php  $user_cart  = DB::table('export_products')->join('carts_temp','export_products.id','=','carts_temp.product_id')->where('carts_temp.user_id',Session::getId())->orderBy('carts_temp.id','desc')->select('export_products.*','carts_temp.quantity','carts_temp.id as cart_id','carts_temp.size','carts_temp.color_id','carts_temp.price')->get();
-                                          Redis::set('export_products:user_cart', json_encode($user_cart), 'EX', 60*60*12); 
-                                           
+                                        
                                            ?>
                                            
                                            
@@ -693,7 +701,16 @@
                                             @foreach($user_cart as $key=>$valu22)
                                              @if($counte>=1)
                                             
-                                              <?php $productsr=DB::table('export_product_image')->where('product_id',$valu22->id)->first(); ?>
+                                              <?php 
+                                              
+                                           
+                                              if (!empty(Redis::get('productsr1:product_id:' . $valu22->id))) {
+                                                    $productsr = 1(Redis::get('productsr1:product_id:' . $valu22->id),0);
+                                                } else {
+                                                    $productsr=DB::table('export_product_image')->where('product_id',$valu22->id)->first();
+                                                    Redis::set('productsr1:product_id:' . $valu22->id , json_encode($productsr), 'EX', 60*60*12);
+                                                }
+                                              ?>
                                             <div class="product-box col-sm-3 col-6">
                                                 <div class="img-wrapper">
                                                     <div class="front">
@@ -1149,12 +1166,18 @@
             <div class="row search-product">
                   <?php 
                     $relproduct=DB::table('export_products')->where('cat_id','export')->get();
-                    Redis::set('export_products:relproduct', json_encode($relproduct), 'EX', 60*60*12);
-                    ?>
+                     ?>
+
             @foreach($relproduct as $value4)
             <?php 
           //  dd($value4->id);
-             $productimage1=DB::table('export_product_image')->where('product_id',$value4->id)->first();
+             
+             if (!empty(Redis::get('productimage1:product_id:' . $value4->id))) {
+                $productsr = 1(Redis::get('productimage1:product_id:' . $value4->id),0);
+            } else {
+                $productimage1=DB::table('export_product_image')->where('product_id',$value4->id)->first();
+                Redis::set('productimage1:product_id:' . $value4->id , json_encode($productsr), 'EX', 60*60*12);
+            }
                    //dd($productimage1);
             ?>
             

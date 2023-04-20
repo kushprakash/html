@@ -1,3 +1,6 @@
+<?php
+use Illuminate\Support\Facades\Redis;
+?>
 @extends('ui.layout.main_ui')
 @section('content')
 <style>
@@ -517,8 +520,16 @@
                                             </tr> -->
                                             <?php 
                                  // dd($value1->id);
-                                $product_color=DB::table('product_color')->where('product_id',$product_detail->id)->get();
-                                Redis::set('product_color:product_color', json_encode($product_color), 'EX', 60*60*12);
+                                
+                                
+                                 if (!empty(Redis::get('product_color:data:' . $product_detail->id))) {
+                                    $product_color = json_decode(Redis::get('product_color:data:' . $product_detail->id),0);
+                                } else {
+                                    $product_color=DB::table('product_color')->where('product_id',$product_detail->id)->get();
+                                    Redis::set('product_color:data:' . $product_detail->id, json_encode($product_color), 'EX', 60*60*12);
+                                }
+                                        
+
                                 ?>
 
                                             <tr>
@@ -536,8 +547,15 @@
 
                                             <tr>
                                                 <th>Size</th>
-                                                <?php  $product_size1=DB::table('product_size')->where('product_id',$product_detail->id)->get();
-                                             //dd($product->products_id);
+                                                <?php 
+                                                
+                                                
+                                             if (!empty(Redis::get('product_size1:data:' . $product_detail->id))) {
+                                                $product_size1 = json_decode(Redis::get('product_size1:data:' . $product_detail->id),0);
+                                            } else {
+                                                $product_size1=DB::table('product_size')->where('product_id',$product_detail->id)->get();
+                                                Redis::set('product_size1:data:' . $product_detail->id, json_encode($product_size1), 'EX', 60*60*12);
+                                            }
                                              ?>
 
                                                 <td> @if($product_size1 != []) 
@@ -684,7 +702,19 @@
                                      }
                                         
                                 ?>
-                        <?php $productimage=DB::table('product_images')->where('product_id',$d->id)->first();?>
+                        <?php
+                        
+                        
+                        
+                        if (!empty(Redis::get('productimage:data:' . $d->id))) {
+                        $productimage = json_decode(Redis::get('productimage:data:' . $d->id),0);
+                        } else {
+                        $productimage=DB::table('product_images')->where('product_id',$d->id)->first();
+
+                        Redis::set('productimage:data:' . $d->id, json_encode($productimage), 'EX', 60*60*12);
+                        }
+
+                        ?>
 
 <figure>
     <a href="{{url('product-detail/'.$d->id.'/'.$color_id)}}">

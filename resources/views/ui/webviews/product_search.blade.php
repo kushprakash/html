@@ -1,3 +1,6 @@
+<?php
+use Illuminate\Support\Facades\Redis;
+?>
 @extends('ui.layout.main_ui')
 @section('content')
 
@@ -26,7 +29,15 @@
                         @foreach($product as $new)
                         <?php 
                                  // dd($value1->id);
-                                $product_coloru=DB::table('product_color')->where('product_id',$new->id)->first();
+                                
+                                if (!empty(Redis::get('product_coloru:data:' . $new->id))) {
+                                $product_coloru = json_decode(Redis::get('product_coloru:data:' . $new->id),0);
+                                } else {
+                               $product_coloru=DB::table('product_color')->where('product_id',$new->id)->first();
+
+                                Redis::set('product_coloru:data:' . $new->id, json_encode($product_coloru), 'EX', 60*60*12);
+                                }
+
                                      if($product_coloru!=null){
                                           $color_id=$product_coloru->id;
                                      }  
@@ -38,7 +49,18 @@
                             <div class="col-6 col-sm-4 col-md-3 col-xl-5col">
                                 <div class="product-default inner-quickview inner-icon">
                                     <figure>
-                                    <?php $image=DB::table('product_images')->where('product_id',$new->id)->first(); $count=0;  ?>
+                                    <?php
+                                        
+                                         
+                                        
+                                         if (!empty(Redis::get('image:data:' . $new->id))) {
+                                        $image = json_decode(Redis::get('image:data:' . $new->id),0);
+                                        } else {
+                                            $image=DB::table('product_images')->where('product_id',$new->id)->first();
+                                            Redis::set('image:data:' . $new->id, json_encode($image), 'EX', 60*60*12);
+                                        }
+                                        
+                                        $count=0;  ?>
                                         @if($image!=null)
 
                                         <a href="{{url('product-detail/'.$new->id.'/'.$color_id)}}">
@@ -54,17 +76,64 @@
                                             <!-- <div class="product-label label-hot">HOT</div>
                                             <div class="product-label label-sale">-20%</div> -->
                                         </div>
-										 <?php $size=DB::table('product_size')->where('product_id',$new->id)->first(); $count=0;  ?>
- @if(Auth::check())
-         <?php   $session = Session::getId();    
-         $resultad=DB::table('carts')->where('user_id',Auth::user()->id)->where('product_id',$new->id)->count();  
-                   $wishtr=DB::table('wishlist')->where('customer_id',Auth::user()->id)->where('product_id',$new->id)->count(); ?> 
+										 <?php 
+                                         
+                                
+                                
+                                 if (!empty(Redis::get('size:data:' . $new->id ))) {
+                                    $resultad = json_decode(Redis::get('size:data:' . $new->id ),0);
+                                } else {
+                                    $size=DB::table('size')->where('product_id',$new->id)->first();
+                                    Redis::set('size:data:' . $new->id , json_encode($size), 'EX', 60*60*12);
+                                }
+
+                                
+                                
+                                $count=0;  ?>
+                            
+                                         @if(Auth::check())
+                                <?php  
+                                
+                                $session = Session::getId();    
+                                $userId=Auth::user()->id;
+                               
+                                if (!empty(Redis::get('carts:count:' . $new->id .':' . $userId))) {
+                                    $resultad = json_decode(Redis::get('carts:count:' . $new->id .':' . $userId),0);
+                                } else {
+                                    $resultad=DB::table('carts')->where('user_id',$userId)->where('product_id',$new->id)->count(); 
+                                    Redis::set('carts:count:' . $new->id .':' . $userId, json_encode($resultad), 'EX', 60*60*12);
+                                }
+
+
+                                if (!empty(Redis::get('wishtr:count:' . $new->id .':' . $userId))) {
+                                    $wishtr = json_decode(Redis::get('wishtr:count:' . $new->id .':' . $userId),0);
+                                } else {
+                                    $wishtr=DB::table('wishlist')->where('customer_id',$userId)->where('product_id',$new->id)->count();
+                                    Redis::set('wishtr:count:' . $new->id .':' . $userId, json_encode($wishtr), 'EX', 60*60*12);
+                                }
+                                ?> 
 		                                 
                                                      @else
                                                      <?php  
- $session = Session::getId();   
-  $resultad=DB::table('carts_temp')->where('user_id',$session)->where('product_id',$new->id)->count();
-								$wishtr=DB::table('wishlist')->where('customer_id',$session)->where('product_id',$new->id)->count();
+                                $session = Session::getId();   
+        
+                                if (!empty(Redis::get('carts:count:' . $new->id .':' . $session))) {
+                                    $resultad = json_decode(Redis::get('carts:count:' . $new->id .':' . $session),0);
+                                } else {
+                                    $resultad=DB::table('carts_temp')->where('user_id',$session)->where('product_id',$new->id)->count(); 
+                                    Redis::set('carts:count:' . $new->id .':' . $session, json_encode($resultad), 'EX', 60*60*12);
+                                }
+
+                                
+
+                                    if (!empty(Redis::get('wishtr:count:' . $new->id .':' . $session))) {
+                                    $wishtr = json_decode(Redis::get('wishtr:count:' . $new->id .':' . $session),0);
+                                } else {
+                                    $wishtr=DB::table('wishlist')->where('customer_id',$session)->where('product_id',$new->id)->count();
+                                    Redis::set('wishtr:count:' . $new->id .':' . $session, json_encode($wishtr), 'EX', 60*60*12);
+                                }
+
+
 								?> 
  
                                                      @endif
@@ -81,8 +150,17 @@
                                     <div class="product-details">
                                         <div class="category-wrap">
                                             <div class="category-list">
-                                             <?php $catssid=DB::table('category')->where('id',$new->cat_id)->where('deleted_at',null)->first();
+                                             <?php 
+                                             
+                                             
                  
+                                            if (!empty(Redis::get('catssid:data:' . $new->cat_id ))) {
+                                                $catssid = json_decode(Redis::get('catssid:data:' . $new->cat_id ),0);
+                                            } else {
+                                                $catssid=DB::table('category')->where('id',$new->cat_id)->where('deleted_at',null)->first();
+                                                Redis::set('catssid:data:' . $new->cat_id , json_encode($catssid), 'EX', 60*60*12);
+                                            }
+
                 ?>
 										@if($catssid != null)
                                         <a href="{{url('category-product/'.$catssid->id)}}" class="product-category">{{$catssid->category}}</a>

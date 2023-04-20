@@ -64,8 +64,7 @@ use Illuminate\Support\Facades\Redis;
       <?php 
       
       $product=DB::table('sub_order')->where('order_id',$r->order_id)->get();
-      Redis::set('sub_order:product', json_encode($product), 'EX', 60*60*12);
-
+    
      
 
       $productcount=DB::table('sub_order')->where('order_id',$r->order_id)->count();
@@ -80,23 +79,62 @@ use Illuminate\Support\Facades\Redis;
            @foreach($product as $val)
            <?php 
            
-           $product1=DB::table('products')->where('id',$val->product_id)->first();
            
-           $product2=DB::table('product_size')->where('id',$val->size_id)->where('color_id',$val->color_id)->first();
+
+           if (!empty(Redis::get('product1:id:' . $val->product_id))) {
+              $product1 = json_decode(Redis::get('product1:id:' . $val->product_id),0);
+          } else {
+              $product1=DB::table('products')->where('id',$val->product_id)->first();
+              Redis::set('product1:id:' . $val->product_id, json_encode($product1), 'EX', 60*60*12);
+          }
+           
+          
+            if (!empty(Redis::get('product2:data:' . $val->size_id .':' . $val->color_id))) {
+                $product2 = json_decode(Redis::get('product2:data:' . $val->size_id .':' . $val->color_id),0);
+            } else {
+                $product2=DB::table('product_size')->where('id',$val->size_id)->where('color_id',$val->color_id)->first();
+                Redis::set('product2:data:' . $val->size_id .':' . $val->color_id, json_encode($product2), 'EX', 60*60*12);
+            }
+
+           
                   //dd($product1);
            ?> 
            <div class="form-group" style="text-align:left;"> 
              <label> Name : @if($product1!=null) {{$product1->name}}
 				 
 				 <?php
-	$damsa=DB::table('sub_order')->where('product_id',$val->product_id)->where('order_id',$r->order_id)->where('user_id',Auth::user()->id)->first();$sa=0; $sama=0;  ?> 
-								@if($damsa != null) <?php 	$esx=explode(",",$damsa->sub_product);
+          $sa=0; $sama=0;
+         if (!empty(Redis::get('damsa:data:' . $val->product_id .':' . $r->order_id.':' . Auth::user()->id))) {
+                $damsa = json_decode(Redis::get('damsa:data:' . $val->product_id .':' . $r->order_id.':' . Auth::user()->id),0);
+            } else {
+               $damsa=DB::table('sub_order')
+               ->where('product_id',$val->product_id)
+               ->where('order_id',$r->order_id)
+               ->where('user_id',Auth::user()->id)
+               ->first();
+               
+                Redis::set('damsa:data:' . $val->product_id .':' . $r->order_id.':' . Auth::user()->id, json_encode($product2), 'EX', 60*60*12);
+            }	
+	          ?> 
+					 
+           	
+              
+              @if($damsa != null) <?php 	$esx=explode(",",$damsa->sub_product);
 										
 										// dd($esx);	?>
 										@if($esx != null)
 										@foreach($esx as $key=>$dam)
 												 
-										<?php $brands=DB::table('sub_product')->where('product_name',$dam)->first();  //dd($brands); ?>
+										<?php 
+                    
+                    if (!empty(Redis::get('brands:data:' . $dam))) {
+                    $brands = json_decode(Redis::get('brands:data:' . $dam),0);
+                    } else {
+                    $brands=DB::table('sub_product')->where('product_name',$dam)->first(); 
+
+                    Redis::set('brands:data:' . $dam, json_encode($brands), 'EX', 60*60*12);
+                    }	
+                    //dd($brands); ?>
 									@if($brands != null)   <strong>  {{$brands->product_name}} </strong> 
 												<?php $sama +=$brands->price; //echo($sa);?>
 												@endif
