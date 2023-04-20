@@ -1,3 +1,6 @@
+<?php
+use Illuminate\Support\Facades\Redis;
+?>
 @extends('ui.layout.main_ui')
 @section('content')
 <style>
@@ -165,16 +168,32 @@ By accessing this website we assume you accept these terms and conditions. Do no
                                        
                                         @foreach($user_cart as $value)
                                         <ul class="qty">
-                                         <?php $productsize=DB::table('product_size')->where('id',$value->size)->first();?>
+                                         <?php 
+                                         if (!empty(Redis::get('place:order:product_size:' . $value->size))) {
+						                    $productsize = json_decode(Redis::get('place:order:product_size:' . $value->size), 0);
+						                  } else {
+						                    $productsize=DB::table('product_size')->where('id',$value->size)->first();
+						                    Redis::set('place:order:product_size:' . $value->size, json_encode($productsize), 'EX', 60*60);
+						                  }
+                                         ?>
                                          
                                             <li><span style="float: left;">{{$value->name}}<br>
 												
-												<?php $sa=0;
-	$damsa=DB::table('add_sub_product_user')->where('product_id',$value->id)->where('user_id',Auth::user()->id)->get();  //dd($damsa);	?>
+												<?php 
+												$sa=0;
+												if (!empty(Redis::get('place:order:sub_product_user:' . $value->id))) {
+													$damsa = json_decode(Redis::get('place:order:sub_product_user:' . $value->id), 0);
+												} else {
+													$damsa=DB::table('add_sub_product_user')->where('product_id',$value->id)->where('user_id',Auth::user()->id)->get();
+													Redis::set('place:order:sub_product_user:' . $value->id, json_encode($damsa), 'EX', 60*60);
+												}
+												?>
 										@if($damsa != "[]")
 										@foreach($damsa  as $key=>$dam)
 												 
-										<?php $brands=DB::table('sub_product')->where('id',$dam->sub_product_id)->first(); //dd($brands); ?>
+										<?php 
+										$brands=DB::table('sub_product')->where('id',$dam->sub_product_id)->first();
+										?>
 									@if($brands != null)   <strong>  {{$brands->product_name}} </strong> 
 												<?php $sa +=$brands->price; //echo($sa);?>
 												@endif
@@ -199,16 +218,19 @@ By accessing this website we assume you accept these terms and conditions. Do no
                                               <li style="font-size:16px;color:black">Use Rewards <span class="count float-right"><i class="fa fa-rupee" style="font-size:18px"></i>
 											<?php
 												  $sadmd=0;
+												  $userID = Auth::user()->id;
 												     date_default_timezone_set('Asia/Kolkata');
-$date = date('Y-m-d');
-//echo $date;
-												  
-												  $sad=DB::table('wallet')->where('user_id',Auth::user()->id)->whereDate('created_at',$date)->get();
-												 // dd($sad);
-												  
-												  ?>	
+												     $date = date('Y-m-d');
+												     if (!empty(Redis::get('place:order:wallet:' . $userID . ':' . $date))) {
+													$sad = json_decode(Redis::get('place:order:wallet:' . $userID . ':' . $date), 0);
+												} else {
+													$sad=DB::table('wallet')->where('user_id',Auth::user()->id)->whereDate('created_at',$date)->get();
+													Redis::set('place:order:wallet:' . $userID . ':' . $date, json_encode($sad), 'EX', 60*60);
+												}    
+										   ?>	
 												  @if($sad != "[]")
-												 <?php $sadmd=DB::table('wallet')->where('user_id',Auth::user()->id)->whereDate('created_at',$date)->sum('amount');
+												 <?php 
+												 $sadmd=DB::table('wallet')->where('user_id',Auth::user()->id)->whereDate('created_at',$date)->sum('amount');
 												  
 												  $dsk=100-$sadmd;
 												  
@@ -292,7 +314,14 @@ $date = date('Y-m-d');
 										
                                         @if(Auth::check())
                                         
-										<?php $das=DB::table('carts')->join('products','carts.product_id','=','products.id')->where('products.trending',0)->where('carts.user_id',Auth::user()->id)->count();?>
+										<?php 
+										$userID = Auth::user()->id;
+										if (!empty(Redis::get('place:carts:products:' . $userID))) {
+											$das = json_decode(Redis::get('place:carts:products:' . $userID), 0);
+										} else {
+											$das=DB::table('carts')->join('products','carts.product_id','=','products.id')->where('products.trending',0)->where('carts.user_id',Auth::user()->id)->count();
+											Redis::set('place:carts:products:' . $userID, json_encode($das), 'EX', 60*60);
+										}?>
 										@if($das !=0)
                                          <div class="text-right"><button type="submit"    class="btn btn-dark btn-place-order text-white">Place Order</button></div>  
 										@else
