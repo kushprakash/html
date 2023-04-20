@@ -1,3 +1,6 @@
+<?php
+use Illuminate\Support\Facades\Redis;
+?>
 @extends('ui.layout.main_ui')
 @section('content')
  
@@ -58,9 +61,15 @@
         </button>
       </div>
       <div class="modal-body">
-      <?php $product=DB::table('sub_order')->where('order_id',$r->order_id)->get();
-     //  dd($product);
-      $productcount=DB::table('sub_order')->where('order_id',$r->order_id)->count();
+      <?php
+      $redisKey = 'myorders:sub:order:'. $r->order_id;
+      if (!empty(Redis::get($redisKey))) {
+        $product = json_decode(Redis::get($redisKey), 0);
+      } else {
+        $product=DB::table('sub_order')->where('order_id',$r->order_id)->get();
+        Redis::set($redisKey, json_encode($product), 'EX', 60*60*12);
+      } 
+      $productcount= count($product);
       
       ?> 
             <div class="form-group" style="float:right;">  
@@ -70,23 +79,51 @@
            @if($product!=null)
            <?php  $count=1;$sama=0; ?>
            @foreach($product as $val)
-           <?php $product1=DB::table('products')->where('id',$val->product_id)->first();
-           
-           $product2=DB::table('product_size')->where('id',$val->size_id)->where('color_id',$val->color_id)->first();
-                  //dd($product1);
+           <?php 
+           $redisKey = 'myorders:products:'. $val->product_id;
+            if (!empty(Redis::get($redisKey))) {
+              $product1 = json_decode(Redis::get($redisKey), 0);
+            } else {
+              $product1=DB::table('products')->where('id',$val->product_id)->first();
+              Redis::set($redisKey, json_encode($product1), 'EX', 60*60*2);
+            } 
+            $redisKey = 'myorders:product:size:'. $val->size_id . ':'.$val->color_id ;
+            if (!empty(Redis::get($redisKey))) {
+              $product2 = json_decode(Redis::get($redisKey), 0);
+            } else {
+              $product2=DB::table('product_size')->where('id',$val->size_id)->where('color_id',$val->color_id)->first();
+              Redis::set($redisKey, json_encode($product2), 'EX', 60*60*2);
+            }
            ?> 
            <div class="form-group" style="text-align:left;"> 
              <label> Name : @if($product1!=null) {{$product1->name}}
 				 
 				 <?php
-	$damsa=DB::table('sub_order')->where('product_id',$val->product_id)->where('order_id',$r->order_id)->where('user_id',Auth::user()->id)->first();$sa=0; $sama=0;  ?> 
+         $redisKey = 'myorders:sub:order:user_id:'. $val->product_id .':'. $r->order_id . ':'.Auth::user()->id ;
+            if (!empty(Redis::get($redisKey))) {
+              $damsa = json_decode(Redis::get($redisKey), 0);
+            } else {
+              $damsa=DB::table('sub_order')->where('product_id',$val->product_id)->where('order_id',$r->order_id)->where('user_id',Auth::user()->id)->first();
+              Redis::set($redisKey, json_encode($damsa), 'EX', 60*60*2);
+            }
+            $sa=0; $sama=0;
+            ?> 
 								@if($damsa != null) <?php 	$esx=explode(",",$damsa->sub_product);
 										
 										// dd($esx);	?>
 										@if($esx != null)
 										@foreach($esx as $key=>$dam)
 												 
-										<?php $brands=DB::table('sub_product')->where('product_name',$dam)->first();  //dd($brands); ?>
+										<?php 
+                    $redisKey = 'myorders:sub:order:product_name:'. $dam ;
+                    if (!empty(Redis::get($redisKey))) {
+                      $brands = json_decode(Redis::get($redisKey), 0);
+                    } else {
+                      $brands=DB::table('sub_product')->where('product_name',$dam)->first();
+                      Redis::set($redisKey, json_encode($brands), 'EX', 60*60*2);
+                    }
+                    
+                     ?>
 									@if($brands != null)   <strong>  {{$brands->product_name}} </strong> 
 												<?php $sama +=$brands->price; //echo($sa);?>
 												@endif
@@ -107,7 +144,20 @@
              
             </div> 
             <div class="form-group" style="text-align:left;"> 
-             <label> Product-images: @if($product1!=null) <?php $productimage1=DB::table('product_images')->where('product_id',$product1->id)->where('color_id',$val->color_id)->first();  ?> <img class="img-fluid " src="@if($productimage1!=null){{asset($productimage1->images)}} @endif"  style="height:100px;width:100px;"> @else N.A @endif </label>
+             <label> Product-images: @if($product1!=null) 
+              <?php
+              $redisKey = 'myorders:sub:order:product_id:'. $product1->id .':color_id:' .$val->color_id;
+                    if (!empty(Redis::get($redisKey))) {
+                      $productimage1 = json_decode(Redis::get($redisKey), 0);
+                    } else {
+                      $productimage1=DB::table('product_images')
+                      ->where('product_id',$product1->id)
+                      ->where('color_id',$val->color_id)
+                      ->first();
+                      Redis::set($redisKey, json_encode($productimage1), 'EX', 60*60*2);
+                    } 
+             
+               ?> <img class="img-fluid " src="@if($productimage1!=null){{asset($productimage1->images)}} @endif"  style="height:100px;width:100px;"> @else N.A @endif </label>
              
             </div> 
 
