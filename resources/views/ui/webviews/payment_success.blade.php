@@ -1,3 +1,6 @@
+<?php
+use Illuminate\Support\Facades\Redis;
+?>
 @extends('ui.layout.main_ui')
 @section('content')
 
@@ -33,9 +36,13 @@
                 <div class="col-lg-6">
                     <div class="product-order">
                         <h3>your order details</h3>
-                        <?php  
-                        $explodepro=DB::table('sub_order')->where('payment_request_id',$orderdetail->payment_request_id)->get();
-                         //dd($explodepro);
+                        <?php 
+                        if (!empty(Redis::get('payment:success:sub_order:'. $orderdetail->payment_request_id))) {
+                            $explodepro = json_decode(Redis::get('payment:success:sub_order:'. $orderdetail->payment_request_id), 0);
+                        } else {
+                            $explodepro=DB::table('sub_order')->where('payment_request_id',$orderdetail->payment_request_id)->get();
+                            Redis::set('payment:success:sub_order:'. $orderdetail->payment_request_id, json_encode($explodepro), 'EX', 60*60*12);
+                        }
                         $count=1;
                         
                         ?> 
@@ -61,11 +68,28 @@
 							
 							
 							@foreach($explodepro as $r)
-                        <?php $data12=DB::table('products')->where('id',$r->product_id)->first();
-                             $data123=DB::table('product_size')->where('id',$r->size_id)->first();
-                             $dataimg=DB::table('product_images')->where('product_id',$r->product_id)->where('color_id',$r->color_id)->first();
-                         //  dd($data123
-							$sa=0;
+                        <?php 
+                        if (!empty(Redis::get('payment:success:products:'. $r->product_id))) {
+                            $data12 = json_decode(Redis::get('payment:success:products:'. $r->product_id), 0);
+                        } else {
+                            $data12=DB::table('products')->where('id',$r->product_id)->first();
+                            Redis::set('payment:success:products:'. $r->product_id, json_encode($data12), 'EX', 60*60*12);
+                        }
+
+                        if (!empty(Redis::get('payment:success:product_size:'. $r->size_id))) {
+                            $data123 = json_decode(Redis::get('payment:success:product_size:'. $r->size_id), 0);
+                        } else {
+                            $data123=DB::table('product_size')->where('id',$r->size_id)->first();
+                            Redis::set('payment:success:product_size:'. $r->size_id, json_encode($data123), 'EX', 60*60*12);
+                        }
+
+                        if (!empty(Redis::get('payment:success:product_images:'. $r->color_id))) {
+                            $dataimg = json_decode(Redis::get('payment:success:product_images:'. $r->color_id), 0);
+                        } else {
+                            $dataimg=DB::table('product_images')->where('product_id',$r->product_id)->where('color_id',$r->color_id)->first();
+                            Redis::set('payment:success:product_images:'. $r->color_id, json_encode($dataimg), 'EX', 60*60*12);
+                        }
+                        $sa=0;
                         ?>
                             <div class="col-3"><img src="@if($dataimg!=null){{asset($dataimg->images)}} @endif" alt=""
                                     class="img-fluid blur-up lazyload mb-2"></div>
@@ -75,15 +99,30 @@
                                     <h5>@if($data12!=null){{$data12->name}} @endif
 									 
 									<br>
-										<?php $sa=0;
-	                   $damsa=DB::table('sub_order')->where('order_id',$r->order_id)->where('product_id',$data12->id)->where('user_id',Auth::user()->id)->first();  
-										$esx=explode(",",$damsa->sub_product);
-										 
-										// dd($esx);	?>
+										<?php 
+                                        $sa=0;
+                                        $userID = Auth::user()->id;
+                                        $redisKey = 'payment:success:sub:order:'. $r->order_id . ':' . $data12->id . ':' .$userID;
+                                        if (!empty(Redis::get($redisKey))) {
+                                            $damsa = json_decode(Redis::get($redisKey), 0);
+                                        } else {
+                                            $damsa=DB::table('sub_order')->where('order_id',$r->order_id)->where('product_id',$data12->id)->where('user_id',Auth::user()->id)->first();
+                                            Redis::set($redisKey, json_encode($damsa), 'EX', 60*60*1);
+                                        }
+                                        $esx=explode(",",$damsa->sub_product);
+                                        ?>
 										@if($esx != null)
 										@foreach($esx as $key=>$dam)
 												 
-										<?php $brands=DB::table('sub_product')->where('product_name',$dam)->first();  //dd($brands); ?>
+										<?php 
+                                        $redisKey = 'payment:success:sub:order:name:'. $dam;
+                                        if (!empty(Redis::get($redisKey))) {
+                                            $brands = json_decode(Redis::get($redisKey), 0);
+                                        } else {
+                                            $brands=DB::table('sub_product')->where('product_name',$dam)->first();
+                                            Redis::set($redisKey, json_encode($brands), 'EX', 60*60*1);
+                                        }
+                                        ?>
 									@if($brands != null)   <strong>  {{$brands->product_name}} {{$brands->price}}</strong> 
 												<?php $sa +=$brands->price; //echo($sa);?>
 												@endif
