@@ -1,3 +1,6 @@
+<?php
+use Illuminate\Support\Facades\Redis;
+?>
 @extends('ui.layout.main_ui')
 @section('content')
     <main class="main ">
@@ -39,14 +42,26 @@
                                     </div>
                                     <?php
                                     if (Auth::check()) {
-                                        $resultad = DB::table('carts')
+                                        $userID = Auth::user()->id;
+                                        if (!empty(Redis::get('category:carts:count:' . $userID . ':' . $product->id))) {
+                                            $resultad = json_decode(Redis::get('category:carts:count:' . $userID . ':' . $product->id), 0);
+                                        } else {
+                                            $resultad=DB::table('carts')
                                             ->where('user_id', Auth::user()->id)
                                             ->where('product_id', $product->id)
                                             ->count();
-                                        $wishtr = DB::table('wishlist')
+                                            Redis::set('category:carts:count:' . $userID . ':' . $product->id, json_encode($resultad), 'EX', 60*60*12);
+                                        }
+
+                                        if (!empty(Redis::get('category:wishlist:count:' . $userID . ':' . $product->id))) {
+                                            $wishtr = json_decode(Redis::get('category:wishlist:count:' . $userID . ':' . $product->id), 0);
+                                        } else {
+                                            $wishtr = DB::table('wishlist')
                                             ->where('customer_id', Auth::user()->id)
                                             ->where('product_id', $product->id)
                                             ->count();
+                                            Redis::set('category:wishlist:count:' . $userID . ':' . $product->id, json_encode($wishtr), 'EX', 60*60*12);
+                                        }
                                     } else {
                                         $session = Session::getId();
                                         $resultad = DB::table('carts_temp')

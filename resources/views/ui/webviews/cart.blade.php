@@ -1,16 +1,9 @@
+<?php
+use Illuminate\Support\Facades\Redis;
+?>
 @extends('ui.layout.main_ui')
 @section('content')
-
-<style>
- 
-    </style>
-
 <main class="main mb-2">
- 
-    <!-- breadcrumb End -->
-
-
-    <!--section start-->
     <section class="cart-section section-b-space" style="margin-top:-39px;">
         <div class="container">
             <div class="row">
@@ -35,19 +28,44 @@
                         <tbody>
                             <tr>
                                 <td>
-                                     <?php $productsr=DB::table('product_images')->where('product_id',$value->id)->where('color_id',$value->color_id)->first(); ?>
+                                     <?php 
+                                     if (!empty(Redis::get('cart:productsr:' . $value->id . ':' .$value->color_id))) {
+                                        $productsr = json_decode(Redis::get('cart:productsr:' . $value->id . ':' .$value->color_id), 0);
+                                      } else {
+                                        $productsr=DB::table('product_images')->where('product_id',$value->id)->where('color_id',$value->color_id)->first();
+                                        Redis::set('cart:productsr:' . $value->id . ':' .$value->color_id , json_encode($productsr), 'EX', 60*60*12);
+                                      }
+
+                                     ?>
                                     <a href="#"><img src="@if($productsr!=null) {{asset($productsr->images)}} @endif" alt="" width="80">
 	
 									</a>
                                 </td>
                                 <td><a href="#">{{$value->name}}  
 									
-									<?php  $sa=0; $damsa=DB::table('add_sub_product_user')->where('product_id',$value->id)->where('user_id',Auth::user()->id)->get();  //dd($damsa);	?>
+									<?php  
+                                    $sa=0;
+                                    $userID = Auth::user()->id;
+                                    if (!empty(Redis::get('cart:sub_product_user:' . $value->id . ':' .$value->color_id))) {
+                                        $damsa = json_decode(Redis::get('cart:sub_product_user:' . $value->id . ':' .$userID), 0);
+                                      } else {
+                                        $damsa=DB::table('add_sub_product_user')->where('product_id',$value->id)->where('user_id',$userID)->get();
+                                        Redis::set('cart:sub_product_user:' . $value->id . ':' .$userID , json_encode($damsa), 'EX', 60*60*12);
+                                      }
+                                    ?>
 										@if($damsa != "[]")
 										@foreach($damsa  as $key=>$dam)
-										<?php $brands=DB::table('sub_product')->where('id',$dam->sub_product_id)->first(); //dd($brands); ?>
+										<?php 
+                                        if (!empty(Redis::get('cart:sub_product:' . $dam->sub_product_id))) {
+                                            $brands = json_decode(Redis::get('cart:sub_product:' . $dam->sub_product_id), 0);
+                                          } else {
+                                            $brands=DB::table('sub_product')->where('id',$dam->sub_product_id)->first();
+                                            Redis::set('cart:sub_product:' . $dam->sub_product_id , json_encode($brands), 'EX', 60*60*12);
+                                          }
+
+                                         ?>
 									@if($brands != null) <br> <strong>  {{$brands->product_name}} </strong>
-										<?php $sa +=$brands->price; //echo($sa);?>
+										<?php $sa +=$brands->price;?>
 									@endif
 										@endforeach	
 										@endif
@@ -58,29 +76,20 @@
                                
 								<td> <h6><strong> {{$sa}} </strong></h6></td>
                                 <td>
-                                <?php $productsize=DB::table('product_size')->where('id',$value->size)->first();?>
+                                <?php 
+                                if (!empty(Redis::get('cart:product_size:' . $value->size))) {
+                                    $productsize = json_decode(Redis::get('cart:product_size:' . $value->size), 0);
+                                } else {
+                                    $productsize=DB::table('product_size')->where('id',$value->size)->first();
+                                    Redis::set('cart:product_size:' . $value->size , json_encode($productsize), 'EX', 60*60*12);
+                                }
+                                ?>
                      
-                                    <h6>{{$value->offer_price}}
-                                   
-                                    </h6>
+                                    <h6>{{$value->offer_price}}</h6>
                                 </td>
-                               
-                                <!-- <td>
-                                    <h6> @if($productsize->size!=[])<?php echo($productsize->size); ?>    @endif</h6>
-                                </td>
-                             -->
-                                
-                                  
-                               
                                 <td>
                                     <div class="qty-box ">
                                         <div class="input-group">
-											<!-- <div class="quantity buttons_added">
-	<input type="button" value="-" class="minus"><input type="number" step="1" min="1" max="" name="quantity" value="1" title="Qty" class="input-text qty text" size="4" pattern="" inputmode=""><input type="button" value="+" class="plus">
-</div>-->
-											
-											
-											
                                             <form action="{{url('add-cart-quantity')}}" method="get">
                                                 <input type="hidden"  name="cart_id"  value="{{$value->cart_id}}" class=" ">
                                             <div class="product-single-filter flex-column align-items-start">
@@ -88,9 +97,6 @@
                                             <input class="horizontal-quantity form-control" name="quantity" id="quantity" value="{{$value->quantity}}" type="text" onchange="this.form.submit()" >
                                         </div>
 											 </div>
-                                        <!--  <input type="number" onchange="this.form.submit()"  name="quantity"  value="{{$value->quantity}}" class="form-control input-number" style="width:40%;">-->
-												 
-												 
                                             </form>
                                         </div>
                                     </div>
@@ -100,22 +106,15 @@
                                    
                                     <h6 class="td-color"> 
                                    <?php 
-                                     
                                     echo($value->offer_price*$value->quantity+$sa); 
                                     $total+=$value->offer_price*$value->quantity+$sa;
-                                                         
-                                    
-                                     
-                                    
-                                    ?> 
-                                    
-                                    
+                                    ?>
+                                        
                                     </h6>
                                 </td>
                                 <td><a href="{{url('add-cart-delete/'.$value->cart_id)}}" class="icon" ><i  class="fa fa-trash" style="color: red;font-size: 22px;"></i></a></td>
                                
                             </tr>
-                             <?php   //$total+=$value->offer_price*$value->quantity; ?>
                         </tbody>
                          @endforeach
                     </table>
