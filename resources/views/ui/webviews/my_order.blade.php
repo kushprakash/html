@@ -1,3 +1,6 @@
+<?php
+use Illuminate\Support\Facades\Redis;
+?>
 @extends('ui.layout.main_ui')
 @section('content')
  
@@ -58,8 +61,13 @@
         </button>
       </div>
       <div class="modal-body">
-      <?php $product=DB::table('sub_order')->where('order_id',$r->order_id)->get();
-     //  dd($product);
+      <?php 
+      
+      $product=DB::table('sub_order')->where('order_id',$r->order_id)->get();
+      Redis::set('sub_order:product', json_encode($product), 'EX', 60*60*12);
+
+     
+
       $productcount=DB::table('sub_order')->where('order_id',$r->order_id)->count();
       
       ?> 
@@ -70,7 +78,9 @@
            @if($product!=null)
            <?php  $count=1;$sama=0; ?>
            @foreach($product as $val)
-           <?php $product1=DB::table('products')->where('id',$val->product_id)->first();
+           <?php 
+           
+           $product1=DB::table('products')->where('id',$val->product_id)->first();
            
            $product2=DB::table('product_size')->where('id',$val->size_id)->where('color_id',$val->color_id)->first();
                   //dd($product1);

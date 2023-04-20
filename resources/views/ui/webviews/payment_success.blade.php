@@ -35,7 +35,7 @@
                         <h3>your order details</h3>
                         <?php  
                         $explodepro=DB::table('sub_order')->where('payment_request_id',$orderdetail->payment_request_id)->get();
-                         //dd($explodepro);
+                        Redis::set('sub_order:explodepro', json_encode($explodepro), 'EX', 60*60*12);
                         $count=1;
                         
                         ?> 

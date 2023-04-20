@@ -518,7 +518,7 @@
                                             <?php 
                                  // dd($value1->id);
                                 $product_color=DB::table('product_color')->where('product_id',$product_detail->id)->get();
-                                      // dd($product_images);
+                                Redis::set('product_color:product_color', json_encode($product_color), 'EX', 60*60*12);
                                 ?>
 
                                             <tr>

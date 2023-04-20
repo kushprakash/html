@@ -75,7 +75,7 @@ $link .= $_SERVER['REQUEST_URI'];
                             <?php 
                                  // dd($value1->id);
                                 $product_color=DB::table('product_color')->where('product_id',$product_detail->id)->get();
-                                      // dd($product_images);
+                                 Redis::set('product_color:product_color', json_encode($product_color), 'EX', 60*60*12);
                                 ?>
                                 <div class="rating"><i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
                                     class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i></div>
@@ -98,7 +98,7 @@ $link .= $_SERVER['REQUEST_URI'];
                                             
                                           <select name="size" class="btn btn-link shadow" onchange="this.form.submit()" style="margin-top:0px;border-top-right-radius: 60px 60px;border-bottom-right-radius: 60px 60px;border-top-left-radius: 60px 60px;border-bottom-left-radius: 60px 60px;">
                                                <?php  $product_size1=DB::table('product_size')->where('product_id',$product_detail->id)->get();
-                                             //dd($product->products_id);
+                                             Redis::set('product_size:product_size1', json_encode($product_size1), 'EX', 60*60*12);
                                              ?>
                                             
                                           <option selected>Select</option>
@@ -176,7 +176,8 @@ $link .= $_SERVER['REQUEST_URI'];
                                         </div>
                                         <div class="row" id="upsell_product">
                                     <?php  $user_cart  = DB::table('products')->join('carts','products.id','=','carts.product_id')->where('carts.user_id',Auth::user()->id)->orderBy('carts.id','desc')->select('products.*','carts.quantity','carts.id as cart_id','carts.size','carts.color_id','carts.price')->get();
-                                           // dd($user_cart); ?>
+                                           Redis::set('products:user_cart', json_encode($user_cart), 'EX', 60*60*12);
+                                           ?>
                                            
                                            
                                         <?php $productst=DB::table('product_images')->where('product_id',$product_detail->id)->first(); ?>
@@ -281,7 +282,8 @@ $link .= $_SERVER['REQUEST_URI'];
                                         </div>
                                         <div class="row" id="upsell_product">
                                     <?php  $user_cart  = DB::table('products')->join('carts_temp','products.id','=','carts_temp.product_id')->where('carts_temp.user_id',Session::getId())->orderBy('carts_temp.id','desc')->select('products.*','carts_temp.quantity','carts_temp.id as cart_id','carts_temp.size','carts_temp.color_id','carts_temp.price')->get();
-                                           // dd($user_cart); ?>
+                                           Redis::set('products:user_cart', json_encode($user_cart), 'EX', 60*60*12);
+                                           ?>
                                            
                                            
                                         <?php $productst=DB::table('product_images')->where('product_id',$product_detail->id)->first(); ?>
@@ -406,7 +408,10 @@ $link .= $_SERVER['REQUEST_URI'];
             </div>
             
             <div class="row search-product">
-                  <?php $relproduct=DB::table('products')->where('cat_id',$product_detail->cat_id)->where('sub_cat_id',$product_detail->sub_cat_id)->where('header_name',$product_detail->header_name)->get();?>
+                  <?php
+                   $relproduct=DB::table('products')->where('cat_id',$product_detail->cat_id)->where('sub_cat_id',$product_detail->sub_cat_id)->where('header_name',$product_detail->header_name)->get();
+                   Redis::set('products:relproduct', json_encode($relproduct), 'EX', 60*60*12);
+                  ?>
             @foreach($relproduct as $value4)
             <?php 
           //  dd($value4->id);

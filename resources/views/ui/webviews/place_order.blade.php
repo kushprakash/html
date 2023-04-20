@@ -170,7 +170,9 @@ By accessing this website we assume you accept these terms and conditions. Do no
                                             <li><span style="float: left;">{{$value->name}}<br>
 												
 												<?php $sa=0;
-	$damsa=DB::table('add_sub_product_user')->where('product_id',$value->id)->where('user_id',Auth::user()->id)->get();  //dd($damsa);	?>
+	$damsa=DB::table('add_sub_product_user')->where('product_id',$value->id)->where('user_id',Auth::user()->id)->get();  
+    Redis::set('add_sub_product_user:damsa', json_encode($damsa), 'EX', 60*60*12);
+    //dd($damsa);	?>
 										@if($damsa != "[]")
 										@foreach($damsa  as $key=>$dam)
 												 
@@ -204,6 +206,7 @@ $date = date('Y-m-d');
 //echo $date;
 												  
 												  $sad=DB::table('wallet')->where('user_id',Auth::user()->id)->whereDate('created_at',$date)->get();
+                                                  Redis::set('wallet:sad', json_encode($sad), 'EX', 60*60*12);
 												 // dd($sad);
 												  
 												  ?>	

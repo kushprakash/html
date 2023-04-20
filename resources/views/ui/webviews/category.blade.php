@@ -1,3 +1,6 @@
+<?php
+use Illuminate\Support\Facades\Redis;
+?>
 @extends('ui.layout.main_ui')
 @section('content')
     <main class="main ">
@@ -43,6 +46,7 @@
                                             ->where('user_id', Auth::user()->id)
                                             ->where('product_id', $product->id)
                                             ->count();
+
                                         $wishtr = DB::table('wishlist')
                                             ->where('customer_id', Auth::user()->id)
                                             ->where('product_id', $product->id)

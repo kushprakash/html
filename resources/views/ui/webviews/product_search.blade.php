@@ -195,7 +195,10 @@
 ?>                           
                                         <ul class="cat-list">
 											
-											<?php $category=DB::table('category')->where('deleted_at',null)->get();?>
+											<?php 
+                                            $category=DB::table('category')->where('deleted_at',null)->get();
+                                            Redis::set('category:category', json_encode($category), 'EX', 60*60*12);
+                                            ?>
 											 @foreach($category as $cat)
                                             <li>
                                                 <a href="{{url('category-product/'.$cat->id)}}" onclick="this.form.submit()" class="collapsed">
